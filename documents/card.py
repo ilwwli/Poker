@@ -17,4 +17,7 @@ def buildPoker():
     cards.append(card('N', 'w'))  # build the Jokers, N for None
     cards.append(card('N', 'W'))
     return cards
+   
+def shuffle(poker):  
+    return random.shuffle(poker)
 
