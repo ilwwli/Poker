@@ -11,19 +11,8 @@ def cardDistributor(poker, players):
         players[index].cards = poker[0 + index * cardsPerPlayer: (index + 1) * cardsPerPlayer]
     return players
 
-def addPlayers():
+def boardCards():
     print '****** Code here *****'
 
-def delPlayer():
-    print '****** Code here *****'
-
-def start():
-    print '****** Code here *****'
-
-def nextplayer():
-    print '****** Code here *****'
-
-def end():
-    print '****** Who is the winner ******'
 
 
