@@ -14,3 +14,12 @@ def displayCards(player):
 def sortedCards(player):
     # ### code here ####
     print 'Code here'
+    
+def removeCards():
+    print '****** Code here *****'
+
+def strategy():
+    print '****** Code here *****'
+
+def boardCards():
+    print '****** Code here *****'
