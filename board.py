@@ -9,7 +9,7 @@ class gameboard():
         self.DiscardPile = []
         self.DisplayArea = []
         
-    
+    fdfds
     def ResetBoard(self, NumOfDecks = 2):
         for i in range(NumOfDecks):  
             self.Deck += FullDeck.GetFullDeck() 
