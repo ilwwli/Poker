@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import card
+from card import FullDeck
 from random import shuffle
 
 class gameboard():
@@ -10,46 +10,64 @@ class gameboard():
         self.DisplayArea = []
         
     
-    def Reinitialize(self, NumOfDecks = 2):
-        self.Deck = [card.FullDeck.GetFullDeck() for i in NumOfDecks]
+    def ResetBoard(self, NumOfDecks = 2):
+        for i in range(NumOfDecks):  
+            self.Deck += FullDeck.GetFullDeck() 
         self.DiscardPile.clear()
         self.DisplayArea.clear()
         shuffle(self.Deck)
         return self
     
-    def InitializeHands(self, CardsForEachPlayer, NumOfPlayers = 4):
+    def Deal(self, CardsForEachPlayer, NumOfPlayers = 4):
         if len(self.Deck) < CardsForEachPlayer * NumOfPlayers:
             return 0
         temp = []
         for i in range(NumOfPlayers):
-            temp += self.Deck[i * CardsForEachPlayer : (i + 1) * CardsForEachPlayer]
+            temp.append(self.Deck[i * CardsForEachPlayer : (i + 1) * CardsForEachPlayer])
         self.Deck[0 : CardsForEachPlayer * NumOfPlayers] = []
         return temp
 
     def Draw(self):
-        return self.Deck.pop() if self.Deck else 0
+        return self.Deck.pop() if self.Deck else 0   
 
-    # def DrawMultiple(self, num):
-    #     index = len(self.Deck)
-    #     if index < num:
-    #         return 0
-    #     temp = self.Deck[index - num: index]
-    #     self.Deck[index - num:index] = []
-    #     return temp
-
-    def ShowDisplayArea(self):
+    def GetDisplayArea(self):
         return self.DisplayArea
 
-    def RefreshDisplayArea(self, cardlist):
-        self.DiscardPile += self.DisplayArea
-        self.DisplayArea = cardlist
-    
-    def Discard(self, cardlist):
-        self.DiscardPile += cardlist
+    def Display(self, cardlist):
+        self.DisplayArea += cardlist
 
-    def ShuffleDeck(self):
-        return shuffle(self.Deck) 
+    def ClearDisplay(self):
+        self.DiscardPile += self.DisplayArea
+        self.DisplayArea.clear()
+
+    def Discard(self, cardlist):
+        self.DiscardPile += cardlist    
+
+    def ReShuffleDeck(self):
+        if self.Deck:
+            shuffle(self.Deck) 
     
-if __name__ == "__main" :
-    gb = gameboard().Reinitialize()
+if __name__ == "__main__" :
+    FullDeck()
+    gb = gameboard()
+    gb.ResetBoard()
+    hands = gb.Deal(27, 4)    
+    cnt = 0
+    for hand in hands:
+        print("\nplayer %d's hand: " % cnt)
+        for card in hand:
+            print(card, end = ' ')
+        cnt += 1
+    print("\nEndOfHands")
+    gb.Display(hands[0])
+    for card in gb.GetDisplayArea():
+        print(card, end = ' ')
+    print("\nEndOfDisplay")
+    gb.Discard(hands[1])
+    gb.ClearDisplay()
+    for card in gb.GetDisplayArea():
+        print(card, end = ' ')
+    print("\nEndOfDisplay II")
+    
+
 

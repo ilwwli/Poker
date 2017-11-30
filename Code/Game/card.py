@@ -35,5 +35,5 @@ class FullDeck():
 if __name__ == "__main__":
     FullDeck()
     for i in FullDeck.GetFullDeck():
-        print(i, end = '\t')
+        print(i, end = ' ')
     print()
