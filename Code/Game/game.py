@@ -61,6 +61,7 @@ class Game():
                 currentPlayer.play_cards(playerInfo['Claim_rank'])
                 board.GameBoard.Display(playerInfo['Claim_rank'])
                 board.GameBoard.Discard(playerInfo['Claim_rank'])
+                lastPlayerClime = playerInfo['Claim']
                 return self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
 
 
@@ -70,11 +71,11 @@ class Game():
             nextPlayer = self.nextRound(self, currentPlayer)
 
 
-
-
-
 if __name__ == "__main__":
     Game()
+
+
+
 
 
 
