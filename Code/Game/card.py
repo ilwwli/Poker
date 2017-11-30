@@ -4,17 +4,29 @@ class Card():
     def __init__(self, suit, rank):
         self.suit = suit  # suit is poker suit
         self.rank = rank  # rank is poker number
+
     def __str__(self):
         d = {'H':u'♥', 'S':u'♠', 'D':u'♦', 'C':u'♣', 'N':None}
         if d[self.suit]:
             return d[self.suit] + str(self.rank)
         else:
             return u'joker' if self.rank == 'w' else u'JOKER'
+
     def __eq__(self, othercard):        
         return Card.rank2num(self.rank) == Card.rank2num(othercard.rank)
 
     def __gt__(self, othercard):
         return Card.rank2num(self.rank) > Card.rank2num(othercard.rank)
+    
+    @staticmethod
+    def islegal(card):
+        if  hasattr(card, 'suit') and \
+            card.suit in ['H', 'S', 'D', 'C', 'W'] and \
+            hasattr(card, 'rank') and \
+            card.rank in ['2', '3', '4', '5', '6', '7', '8', '9', '10',
+                          'J', 'Q', 'K', 'A', 'w', 'W']:
+            return True
+        return False
 
     @staticmethod
     def rank2num(rank):
@@ -35,8 +47,8 @@ class FullDeck():
                 FullDeck.cards.append(Card(suit, NumberCard))
             for ColorCard in ColorCards:
                 FullDeck.cards.append(Card(suit, ColorCard))
-        FullDeck.cards.append(Card('N', 'w'))  # build the Jokers, N for None
-        FullDeck.cards.append(Card('N', 'W'))
+        FullDeck.cards.append(Card('W', 'w'))  # build the Jokers, W for Wang
+        FullDeck.cards.append(Card('W', 'W'))
 
     @classmethod
     def GetFullDeck(self):
