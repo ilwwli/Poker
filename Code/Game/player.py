@@ -16,7 +16,7 @@ class Player:
         for card in self.cards:
             print(card)
     
-    def _play_cards(self, cardlist):
+    def play_cards(self, cardlist):
         for card in cardlist:
             self.cards.remove(card)
     
@@ -30,6 +30,7 @@ class Player:
         if last_player_claim:
             display = self.board.GetDisplayArea()
             #actual_playedactual_played = display[-last_player_claim[claim_length] :]
+            # ******** #
             print("Last Player Claims He played %d '%s' cards" % last_claim_length, last_claim_rank)
             print("There are %d cards on the deck at present" % len(display))
         argu = {} # return arguments 
@@ -54,7 +55,7 @@ class Player:
         choice = 0
         while choice <= 0 or choice >= len(optionlist):
             choice = input("Input your choice:")
-        option[optionlist[choice]](argu)
+        option[optionlist[choice - 1]](argu)
 
         # Final Judgements
         if not self.cards:
@@ -72,16 +73,17 @@ class Player:
         while num > len(self.cards):
             num = input("Type how many cards you want to follow:")
         cardlist = self._input_card_list(num)
-        self._play_cards(cardlist)
-        self.board.Display(cardlist)
+        ## ARGU CHANGEv*****
+        #self._play_cards(cardlist)
+        #self.board.Display(cardlist)
 
     def _choose_pass(self, argu:dict, last_claim):
-        argu['Claim'] = last_claim
+        #argu['Claim'] = last_claim
         argu['Pass'] = None        
 
     def _choose_claim(self, argu:dict):
         print("It's your arbitary turn now, just claim what you want:")
-        print("Claim example: J 5 for 5 'J' cards")
+        print("Claim example: 5 J for 5 'J' cards")
         claim = []
         while 1:
             claim = Input("Please make your claim:")
@@ -95,8 +97,9 @@ class Player:
             break
         argu['Claim'] = {'claim_length' : int(claim[0]), 'claim_rank' : claim[1]}
         cardlist = self._input_card_list(int(claim[0]))
-        self._play_cards(cardlist)
-        self.board.Display(cardlist)
+        ## ARG CHANGE
+        #self._play_cards(cardlist)
+        #self.board.Display(cardlist)
 
     def _input_card_list(self, num) -> cardlist:
         print("""   Please Input Card List, Example: 
@@ -114,6 +117,9 @@ class Player:
                 if all(map( lambda x: x>0, 
                             (Counter(self.cards) - Counter(cardlist)).values()))
                 return cardlist
+
+    def print_log(self, string):
+        print(string)
            
 
 

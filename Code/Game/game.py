@@ -11,6 +11,7 @@ class Game():
         self.board = board.GameBoard()
         self.players = []
         self.init_game()
+        self.runGame()
         #self.reset_game()
 
     def cardDistributor(self, poker):
@@ -36,39 +37,46 @@ class Game():
         self.players[0].display_cards()
 
     def nextRound(self, currentPlayer):
-        lastPlayerClime = {}
+        lastPlayerClaim = {}
         while (True):
-            playerInfo = currentPlayer.turn(lastPlayerClime)
+            playerInfo = currentPlayer.turn(lastPlayerClaim)
             if (playerInfo['ifWin']):
-                exit()
-            if (playerInfo['ifDoubt']):
-                if (len(board.Gameboard.DisplayArea) == lastPlayerClime['claim_length']) \
-                        and (board.GameBoard.DisplayArea == lastPlayerClime['claim_rank']):
-                    currentPlayer.insert_cards(board.GameBoard.DisplayArea)
-                    board.GameBoard.delDiscard(board.GameBoard.DisplayArea)
+                return None
+            elif (playerInfo['ifDoubt']):
+                #if (len(board.GameBoard.GetDisplayArea) == lastPlayerClaim['claim_length']) \
+                #        and (board.GameBoard.GetDisplayArea == lastPlayerClaim['claim_rank']):
+                if True:
+                    # Doubt Failed
+                    currentPlayer.insert_cards(board.GameBoard.GetDisplayArea)
+                    #board.GameBoard.delDiscard(board.GameBoard.GetDisplayArea)
                     board.GameBoard.ClearDisplay()
+                    # ****PASS SITUATION****
                     return self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
                 else:
-                    lastPlayer = self.players[(self.players.index(currentPlayer) - 1)] if self.players.index(currentPlayer) \
-                         else self.players[-1]
+                    # Doubt Succeeded
+                    lastPlayer = self.players[(self.players.index(currentPlayer) - 1)] \ 
+                        if self.players.index(currentPlayer) else self.players[-1]
                     lastPlayer.insert_cards(board.GameBoard.DisplayArea)
-                    board.GameBoard.delDiscard(board.GameBoard.DisplayArea)
+                    #board.GameBoard.delDiscard(board.GameBoard.DisplayArea)
                     board.GameBoard.ClearDisplay()
                     return currentPlayer
-            if (playerInfo['Pass']):
+            elif (playerInfo['Pass']):
                 return self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
-            else:
-                currentPlayer.play_cards(playerInfo['Claim_rank'])
-                board.GameBoard.Display(playerInfo['Claim_rank'])
-                board.GameBoard.Discard(playerInfo['Claim_rank'])
-                lastPlayerClime = playerInfo['Claim']
+            elif (playerInfo['Follow']:
+                # or claim
+                # Actual Played Card are different from what he claimed*******
+                #currentPlayer.play_cards(playerInfo['Claim']['Claim_rank'])
+                board.GameBoard.Display(playerInfo['Claim']['Claim_rank'])
+                board.GameBoard.Discard(playerInfo['Claim']['Claim_rank'])
+                lastPlayerClaim = playerInfo['Claim']
                 return self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
 
 
     def runGame(self):
         currentPlayer = random.choice(self.players)
-        while(True):
-            nextPlayer = self.nextRound(self, currentPlayer)
+        while(currentPlayer):
+            nextPlayer = self.nextRound(currentPlayer)
+            currentPlayer = nextPlayer
 
 
 if __name__ == "__main__":
