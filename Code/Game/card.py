@@ -10,14 +10,24 @@ class Card():
             return d[self.suit] + str(self.rank)
         else:
             return u'joker' if self.rank == 'w' else u'JOKER'
+    def __eq__(self, othercard):        
+        return Card.rank2num(self.rank) == Card.rank2num(othercard.rank)
 
+    def __gt__(self, othercard):
+        return Card.rank2num(self.rank) > Card.rank2num(othercard.rank)
+
+    @staticmethod
+    def rank2num(rank):
+        rank2numdict = {'2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9,
+                        '10':10, 'J':11, 'Q':12, 'K':13, 'A':14, 'w':15, 'W':16}
+        return rank2numdict[rank]
     
 class FullDeck():
     cards = []
     def __init__(self):
         if FullDeck.cards:
             return
-        NumberCards = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+        NumberCards = ['2', '3', '4', '5', '6', '7', '8', '9', '10']
         ColorCards = ['J', 'Q', 'K', 'A']
         suits = ['H', 'S', 'D', 'C'] # H for Hearts, S for Spades, D for Diamonds, C for Clubs.
         for suit in suits:

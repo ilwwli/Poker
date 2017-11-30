@@ -3,7 +3,7 @@
 from card import FullDeck
 from random import shuffle
 
-class gameboard():
+class GameBoard():
     def __init__(self):
         self.Deck = []
         self.DiscardPile = []
@@ -49,7 +49,7 @@ class gameboard():
     
 if __name__ == "__main__" :
     FullDeck()
-    gb = gameboard()
+    gb = GameBoard()
     gb.ResetBoard()
     hands = gb.Deal(27, 4)    
     cnt = 0
