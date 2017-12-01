@@ -12,12 +12,12 @@ class Card():
         else:
             return u'joker' if self.rank == 'w' else u'JOKER'
 
-    def __eq__(self, othercard):        
+    def __eq__(self, othercard):
         return Card.rank2num(self.rank) == Card.rank2num(othercard.rank)
 
     def __gt__(self, othercard):
         return Card.rank2num(self.rank) > Card.rank2num(othercard.rank)
-    
+
     @staticmethod
     def islegal(card):
         if  hasattr(card, 'suit') and \
@@ -33,7 +33,7 @@ class Card():
         rank2numdict = {'2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9,
                         '10':10, 'J':11, 'Q':12, 'K':13, 'A':14, 'w':15, 'W':16}
         return rank2numdict[rank]
-    
+
 class FullDeck():
     cards = []
     def __init__(self):

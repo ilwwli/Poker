@@ -1,5 +1,8 @@
-def turn(self) -> dict:
-    '''   
+def turn(self, is_new_turn) -> dict:
+    '''
+    输入参数：   
+        is_new_turn 崭新的一轮，在初始阶段或者是doubt之后执行，仅可以执行claim。
+        ** 突然发现需要增加此参数 不然turn无法判断 或者可以写一个normal_turn和new_turn **
     返回值：  
     {
         'Win' : True/False,

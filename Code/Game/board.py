@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from card import FullDeck
 from random import shuffle
+from card import FullDeck
 
 class GameBoard():
     def __init__(self):
         self.Deck = []
         self.DiscardPile = []
         self.DisplayArea = []
-        
-    
+
+
     def ResetBoard(self, NumOfDecks = 2):
-        for i in range(NumOfDecks):  
-            self.Deck += FullDeck.GetFullDeck() 
+        for i in range(NumOfDecks):
+            self.Deck += FullDeck.GetFullDeck()
         self.DiscardPile.clear()
         self.DisplayArea.clear()
         shuffle(self.Deck)
         return self
-    
+
     def Deal(self, CardsForEachPlayer, NumOfPlayers = 4):
         if len(self.Deck) < CardsForEachPlayer * NumOfPlayers:
             return 0
@@ -28,7 +28,7 @@ class GameBoard():
         return temp
 
     def Draw(self):
-        return self.Deck.pop() if self.Deck else 0   
+        return self.Deck.pop() if self.Deck else 0
 
     def GetDisplayArea(self):
         return self.DisplayArea
@@ -41,17 +41,17 @@ class GameBoard():
         self.DisplayArea.clear()
 
     def Discard(self, cardlist):
-        self.DiscardPile += cardlist    
+        self.DiscardPile += cardlist
 
     def ReShuffleDeck(self):
         if self.Deck:
-            shuffle(self.Deck) 
-    
+            shuffle(self.Deck)
+
 if __name__ == "__main__" :
     FullDeck()
     gb = GameBoard()
     gb.ResetBoard()
-    hands = gb.Deal(27, 4)    
+    hands = gb.Deal(27, 4)
     cnt = 0
     for hand in hands:
         print("\nplayer %d's hand: " % cnt)
@@ -68,6 +68,6 @@ if __name__ == "__main__" :
     for card in gb.GetDisplayArea():
         print(card, end = ' ')
     print("\nEndOfDisplay II")
-    
+
 
 
