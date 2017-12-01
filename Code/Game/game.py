@@ -23,19 +23,12 @@ class Game():
         self.pack_num = 0
         card.FullDeck() # initial card.FullDeck
         self.init_game()
-        self.run_game()
-
-    # def cardDistributor(self, poker):
-    #     random.shuffle(poker)
-    #     cardsPerPlayer = int(len(poker) / len(self.players))
-    #     print(cardsPerPlayer)
-    #     for index in range(len(self.players)):
-    #         self.players[index].cards = poker[0 + index * cardsPerPlayer: (index + 1) * cardsPerPlayer]
+        self.run_game()    
 
     def set_player_numbers(self, player_numbers, player_names):
         self.players = [player.Player(name) for index, name in zip(range(player_numbers), player_names)]
-        print (len(self.players))
-        print (self.players[0].display_cards())
+        #print (len(self.players))
+        #print (self.players[0].display_cards())
 
     def init_game(self):
         '''
@@ -60,40 +53,44 @@ class Game():
         while (True):
             playerInfo = currentPlayer.turn(IsNewTurn)
             IsNewTurn = False
+
             if (playerInfo['Win']):
                 return None
+
             elif playerInfo['Choice'] == 'Claim':
                 lastPlayerClaim = playerInfo['Claim']
                 currentPlayer.play_cards(playerInfo['Cards'])
-                board.GameBoard.Display(playerInfo['Cards'])
-            elif playerInfo['Choice'] == 'Qustion':
-                LastPlayerCards = board.GameBoard.GetDisplayArea[len(board.GameBoard.GetDisplayArea()) \
-                            - len(playerInfo['Cards']): len(board.GameBoard.GetDisplayArea())]
+                self.board.Display(playerInfo['Cards'])
+
+            elif playerInfo['Choice'] == 'Question':
+                LastPlayerCards = self.board.GetDisplayArea()[len(self.board.GetDisplayArea()) \
+                            - lastPlayerClaim['claim_length']:] #- len(playerInfo['Cards']):]
                 temp = []
                 for i in LastPlayerCards:
-                    temp.append(i)
+                    temp.append(i.rank)
+                lastPlayer = self.players[self.players.index(currentPlayer) - PassCount]
                 if set(temp) == set(lastPlayerClaim['Claim_rank']):
-                    # Doubt Failed
-                    currentPlayer.insert_cards(board.GameBoard.GetDisplayArea)
-                    board.GameBoard.ClearDisplay()
-                    return self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
+                    # Question Failed
+                    currentPlayer.insert_cards(self.board.GetDisplayArea())
+                    self.board.ClearDisplay()
+                    return lastPlayer#self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
                 else:
-                    # Doubt Succeeded
-                    lastPlayer = self.players[self.players.index(currentPlayer) - PassCount]
-                    lastPlayer.insert_cards(board.GameBoard.DisplayArea)
-                    board.GameBoard.ClearDisplay()
+                    # Question Succeeded                    
+                    lastPlayer.insert_cards(self.board.GetDisplayArea())
+                    self.board.ClearDisplay()
                     return currentPlayer
+
             elif playerInfo['Choice'] == 'Pass':
                 PassCount += 1
-                if PassCount == len(self.Players) - 1:
+                if PassCount == len(self.players) - 1:
                     return currentPlayer
 
             elif (playerInfo['Choice'] == 'Follow'):
                 # or claim
                 # Actual Played Card are different from what he claimed*******
                 currentPlayer.play_cards(playerInfo['Cards'])
-                board.GameBoard.Display(playerInfo['Cards'])
-                lastPlayerClaim = playerInfo['Claim']
+                self.board.Display(playerInfo['Cards'])
+                lastPlayerClaim['claim_length'] = len(playerInfo['Cards'])
                 PassCount = 0
 
     def run_game(self):

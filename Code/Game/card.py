@@ -6,7 +6,7 @@ class Card():
         self.rank = rank  # rank is poker number
 
     def __str__(self):
-        d = {'H':u'♥', 'S':u'♠', 'D':u'♦', 'C':u'♣', 'N':None}
+        d = {'H':u'♥', 'S':u'♠', 'D':u'♦', 'C':u'♣', 'W':None}
         if d[self.suit]:
             return d[self.suit] + str(self.rank)
         else:

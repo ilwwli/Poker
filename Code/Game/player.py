@@ -13,7 +13,8 @@ class Player:
     def _display_cards(self):
         self.cards.sort()
         for card in self.cards:
-            print(card)
+            print(card, end = '\t')
+        print()
 
     def play_cards(self, cardlist):
         for card in cardlist:
@@ -43,8 +44,8 @@ class Player:
             print("%s : %d" % (option, ind), end='\t')
             optionlist.append(option)
         choice = 0
-        while choice <= 0 or choice >= len(optionlist):
-            choice = input("Input your choice:")
+        while choice <= 0 or choice > len(optionlist):
+            choice = int(input("Input your choice:"))
         arg['Choice'] = optionlist[choice - 1]
         options[optionlist[choice - 1]](arg) # Execute Option Function
 
