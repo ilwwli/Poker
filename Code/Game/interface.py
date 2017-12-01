@@ -12,7 +12,7 @@ def turn(self, is_new_turn) -> dict:
         
     }
     在开始新的一轮（Claim）的情况下， Cards, Claim参数均存在
-    在跟牌（Follow）的情况下，仅存在Cards参数
+    在跟牌（Follow）的情况下，仅存在Cards参数    #和第一种情况合并一下更好些。
     其他情况下不存在任何可选参数
     '''
     pass
