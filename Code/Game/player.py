@@ -13,7 +13,7 @@ class Player:
     def _display_cards(self):
         self.cards.sort()
         for card in self.cards:
-            print(card, end = '\t')
+            print(card, end = ' ')
         print()
 
     def play_cards(self, cardlist):
@@ -25,6 +25,7 @@ class Player:
 
     def turn(self, new_turn):
         # Must_Done_Process
+        print("\nPlayer %s, now is your turn." % self.name)
         print("Your hand is:")
         self._display_cards()
         arg = {} # return arguments
@@ -35,17 +36,16 @@ class Player:
             options['Claim'] = self._choose_claim
         else:
             options['Follow'] = self._choose_follow
-            options['Doubt'] = self._choose_doubt
+            options['Question'] = self._choose_question
             options['Pass'] = self._choose_pass
 
         print("Your Options are as follows:")
         optionlist = []
         for ind, option in enumerate(options, 1):
             print("%s : %d" % (option, ind), end='\t')
-            optionlist.append(option)
-        choice = 0
-        while choice <= 0 or choice > len(optionlist):
-            choice = int(input("Input your choice:"))
+            optionlist.append(option)        
+        print("Input your choice")
+        choice = self._get_number(len(optionlist), 1)
         arg['Choice'] = optionlist[choice - 1]
         options[optionlist[choice - 1]](arg) # Execute Option Function
 
@@ -53,14 +53,12 @@ class Player:
         arg['Win'] = not bool(self.cards)
         return arg
 
-    def _choose_doubt(self, arg: dict):
-        arg['Doubt'] = True
+    def _choose_question(self, arg: dict):        
         return
 
     def _choose_follow(self, arg: dict):
-        num = float('inf')
-        while num > len(self.cards):
-            num = input("Type how many cards you want to follow:")
+        print("Type how many cards you want to follow:")
+        num = self._get_number(len(self.cards), 1)
         arg['Cards'] = self._input_card_list(num)
         return
 
@@ -73,6 +71,7 @@ class Player:
         claim = []
         while 1:
             claim = input("Please make your claim:")
+            claim = claim.strip().split()
             if len(claim) != 2:
                 continue
             # judge Number argument
@@ -83,9 +82,13 @@ class Player:
                 if claim[0] <= 0 or claim[0] > 10:
                     continue
             # judge Rank argument
-            if len(claim[1]) != 1 or claim[1] not in \
-                ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']:
+            if len(claim[1]) != 1:
                 continue
+            else:
+                claim[1] = claim[1].upper()
+                if claim[1] not in ['2', '3', '4', '5', '6', '7',
+                                    '8', '9', '10', 'J', 'Q', 'K', 'A']:
+                    continue
             break
         arg['Claim'] = {'claim_length' : int(claim[0]), 'claim_rank' : claim[1]}
         arg['Cards'] = self._input_card_list(int(claim[0]))
@@ -98,13 +101,31 @@ class Player:
         while 1:
             string = input("Input now:")
             templist = string.strip().split()
-            cardlist = [card.Card(suit, rank) for cardstr in templist
-                        for suit, rank in cardstr.upper()]
+            templist = [(string[0], string[1:]) for string in templist]
+            print(templist)
+            templist = [(suit.upper(), rank.upper()) if suit.upper() != 'W' else (suit.upper(), rank) \
+                        for suit, rank in templist]
+            print(templist)           
+            cardlist = [card.Card(suit,rank) for suit,rank in templist]           
             if len(cardlist) != num:
+                print('length error')
                 continue
-            if  all(map(card.Card.islegal, cardlist)):
-                if all(map(lambda x: x > 0, (Counter(self.cards) - Counter(cardlist)).values())):
-                    return cardlist
+            delta = Counter(self.cards)
+            delta.subtract(cardlist)            
+            #print(delta.items())          
+            if all(map(lambda x: x >= 0, delta.values())):                
+                return cardlist
+            print('not in hand')
+
+    def _get_number(self, maxm, minm = 0) -> int:
+        if maxm < minm:
+            return minm        
+        while 1:
+            num = input("Input a number: ")
+            if num.isdigit():
+                num = int(num)
+                if num <= maxm and num >= minm:
+                    return num        
 
     def print_log(self, string):
         print(string)

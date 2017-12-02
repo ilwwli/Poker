@@ -42,7 +42,7 @@ class Game():
         player_numbers = int(input("How many players?\n"))
         player_names = []
         for i in range(player_numbers):
-            player_names.append(input("\nType player%d's name:\t" % i))
+            player_names.append(input("\nType player%d's name:\t" % i) + str(i))
         self.set_player_numbers(player_numbers, player_names)
         self.pack_num = int(input("How many decks do you want to play?\n"))
 
@@ -51,8 +51,12 @@ class Game():
         lastPlayerClaim = {}  #dict(claim_length:int, claim_rank:card_rank)
         IsNewTurn = True  # or TurnCount
         while (True):
+            for i in self.board.GetDisplayArea():
+                print(i, end = ' ')
             playerInfo = currentPlayer.turn(IsNewTurn)
             IsNewTurn = False
+            # when passcount = 0, lastplayer = currentplayer - 1
+            lastPlayer = self.players[self.players.index(currentPlayer) - PassCount - 1]
 
             if (playerInfo['Win']):
                 return None
@@ -67,15 +71,18 @@ class Game():
                             - lastPlayerClaim['claim_length']:] #- len(playerInfo['Cards']):]
                 temp = []
                 for i in LastPlayerCards:
-                    temp.append(i.rank)
-                lastPlayer = self.players[self.players.index(currentPlayer) - PassCount]
-                if set(temp) == set(lastPlayerClaim['Claim_rank']):
+                    temp.append(i.rank)                
+                if 'w' in temp or 'W' in temp:
+                    temp.append(lastPlayerClaim['claim_rank'])               
+                if (set(temp) - set('wW')) == set(lastPlayerClaim['claim_rank']):
                     # Question Failed
+                    print("Question Failed!")
                     currentPlayer.insert_cards(self.board.GetDisplayArea())
                     self.board.ClearDisplay()
                     return lastPlayer#self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
                 else:
-                    # Question Succeeded                    
+                    # Question Succeeded
+                    print("Question Succeeded!")                   
                     lastPlayer.insert_cards(self.board.GetDisplayArea())
                     self.board.ClearDisplay()
                     return currentPlayer
@@ -83,15 +90,19 @@ class Game():
             elif playerInfo['Choice'] == 'Pass':
                 PassCount += 1
                 if PassCount == len(self.players) - 1:
-                    return currentPlayer
+                    # Everyone choose pass
+                    self.board.ClearDisplay()
+                    # lastplayer = firstplayer = nextplayer
+                    return lastPlayer
 
-            elif (playerInfo['Choice'] == 'Follow'):
-                # or claim
-                # Actual Played Card are different from what he claimed*******
+            elif (playerInfo['Choice'] == 'Follow'):                
+                # Actual Played Card may differ from what he claimed
                 currentPlayer.play_cards(playerInfo['Cards'])
                 self.board.Display(playerInfo['Cards'])
                 lastPlayerClaim['claim_length'] = len(playerInfo['Cards'])
                 PassCount = 0
+            # currentplayer = currentplayer + 1
+            currentPlayer = self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
 
     def run_game(self):
         self.reset_game()

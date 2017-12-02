@@ -18,6 +18,9 @@ class Card():
     def __gt__(self, othercard):
         return Card.rank2num(self.rank) > Card.rank2num(othercard.rank)
 
+    def __hash__(self):
+        return hash(self.suit + self.rank)
+
     @staticmethod
     def islegal(card):
         if  hasattr(card, 'suit') and \
