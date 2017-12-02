@@ -51,8 +51,8 @@ class Game():
         lastPlayerClaim = {}  #dict(claim_length:int, claim_rank:card_rank)
         IsNewTurn = True  # or TurnCount
         while (True):
-            for i in self.board.GetDisplayArea():
-                print(i, end = ' ')
+            # for i in self.board.GetDisplayArea():
+            #     print(i, end = ' ')
             playerInfo = currentPlayer.turn(IsNewTurn)
             IsNewTurn = False
             # when passcount = 0, lastplayer = currentplayer - 1
