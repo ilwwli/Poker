@@ -43,17 +43,17 @@ class Player:
         optionlist = []
         for ind, option in enumerate(options, 1):
             print("%s : %d" % (option, ind), end='\t')
-            optionlist.append(option)        
+            optionlist.append(option)
         print("Input your choice")
         choice = self._get_number(len(optionlist), 1)
         arg['Choice'] = optionlist[choice - 1]
         options[optionlist[choice - 1]](arg) # Execute Option Function
 
         # Final Judgements
-        arg['Win'] = not bool(self.cards)
+        # Nothing to do here
         return arg
 
-    def _choose_question(self, arg: dict):        
+    def _choose_question(self, arg: dict):
         return
 
     def _choose_follow(self, arg: dict):
@@ -107,27 +107,27 @@ class Player:
             print(templist)
             templist = [(suit.upper(), rank.upper()) if suit.upper() != 'W' else (suit.upper(), rank) \
                         for suit, rank in templist]
-            print(templist)           
-            cardlist = [card.Card(suit,rank) for suit,rank in templist]           
+            print(templist)
+            cardlist = [card.Card(suit,rank) for suit,rank in templist]
             if len(cardlist) != num:
                 print('length error')
                 continue
             delta = Counter(self.cards)
-            delta.subtract(cardlist)            
-            #print(delta.items())          
-            if all(map(lambda x: x >= 0, delta.values())):                
+            delta.subtract(cardlist)
+            #print(delta.items())
+            if all(map(lambda x: x >= 0, delta.values())):
                 return cardlist
             print('not in hand')
 
     def _get_number(self, maxm, minm = 0) -> int:
         if maxm < minm:
-            return minm        
+            return minm
         while 1:
             num = input("Input a number: ")
             if num.isdigit():
                 num = int(num)
                 if num <= maxm and num >= minm:
-                    return num        
+                    return num
 
     def print_log(self, string):
         print(string)
