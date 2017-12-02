@@ -1,13 +1,12 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import ctypes  
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")  
+
 """
 ZetCode PyQt5 tutorial 
 
-This program creates a toolbar.
-The toolbar has one action, which
-terminates the application, if triggered.
+This program creates a skeleton of
+a classic GUI application with a menubar,
+toolbar, statusbar, and a central widget. 
 
 Author: Jan Bodnar
 Website: zetcode.com 
@@ -15,10 +14,13 @@ Last edited: August 2017
 """
 
 import sys
-from PyQt5.QtWidgets import QMainWindow, QAction, qApp, QApplication
+from PyQt5.QtWidgets import (QApplication,
+    QWidget, QLCDNumber, QSlider, QVBoxLayout
+    )
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 
-class Example(QMainWindow):
+class Example(QWidget):
     
     def __init__(self):
         super().__init__()
@@ -28,15 +30,18 @@ class Example(QMainWindow):
         
     def initUI(self):               
         
-        exitAct = QAction(QIcon('exit24.png'), 'Exit', self)
-        exitAct.setShortcut('Ctrl+Q')
-        exitAct.triggered.connect(qApp.quit)
+        lcd = QLCDNumber(self)
+        sld = QSlider(Qt.Horizontal, self)
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(lcd)
+        vbox.addWidget(sld)
+
+        self.setLayout(vbox)
+        sld.valueChanged.connect(lcd.display)
         
-        self.toolbar = self.addToolBar('Exit')
-        self.toolbar.addAction(exitAct)
-        
-        self.setGeometry(300, 300, 300, 200)
-        self.setWindowTitle('Toolbar')    
+        self.setGeometry(300, 300, 350, 300)
+        self.setWindowTitle('Review')    
         self.show()
         
         

@@ -83,11 +83,13 @@ class Player:
                     continue
             # judge Rank argument
             if len(claim[1]) != 1:
+                if(claim[1]) == '10':
+                    break
                 continue
             else:
                 claim[1] = claim[1].upper()
                 if claim[1] not in ['2', '3', '4', '5', '6', '7',
-                                    '8', '9', '10', 'J', 'Q', 'K', 'A']:
+                                    '8', '9', 'J', 'Q', 'K', 'A']:
                     continue
             break
         arg['Claim'] = {'claim_length' : int(claim[0]), 'claim_rank' : claim[1]}
