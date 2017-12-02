@@ -23,7 +23,7 @@ class Game():
         self.pack_num = 0
         card.FullDeck() # initial card.FullDeck
         self.init_game()
-        self.run_game()    
+        self.run_game()
 
     def set_player_numbers(self, player_numbers, player_names):
         self.players = [player.Player(name) for index, name in zip(range(player_numbers), player_names)]
@@ -59,7 +59,28 @@ class Game():
             lastPlayer = self.players[self.players.index(currentPlayer) - PassCount - 1]
 
             if (playerInfo['Win']):
-                return None
+                if playerInfo['Choice'] == 'Claim':
+                    temp = []
+                    for i in playerInfo['Cards']:
+                        temp.append(i.rank)
+                    if 'w' in temp or 'W' in temp:
+                        temp.append(playerInfo['Claim']['claim_rank'])
+                    if set(temp) == set(playerInfo['Claim']['claim_rank']):
+                        print('Congratulations, you win!')
+                        return None
+                    else:
+                        return self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
+                else:  # playerInfo['Choice'] == 'Follow'
+                    temp = []
+                    for i in playerInfo['Cards']:
+                        temp.append(i.rank)
+                    if 'w' in temp or 'W' in temp:
+                        temp.append(lastPlayerClaim['claim_rank'])
+                    if set(temp) == set(playerInfo['Claim']['claim_rank']):
+                        print('Congratulations, you win!')
+                        return None
+                    else:
+                        return self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
 
             elif playerInfo['Choice'] == 'Claim':
                 lastPlayerClaim = playerInfo['Claim']
@@ -71,9 +92,9 @@ class Game():
                             - lastPlayerClaim['claim_length']:] #- len(playerInfo['Cards']):]
                 temp = []
                 for i in LastPlayerCards:
-                    temp.append(i.rank)                
+                    temp.append(i.rank)
                 if 'w' in temp or 'W' in temp:
-                    temp.append(lastPlayerClaim['claim_rank'])               
+                    temp.append(lastPlayerClaim['claim_rank'])
                 if (set(temp) - set('wW')) == set(lastPlayerClaim['claim_rank']):
                     # Question Failed
                     print("Question Failed!")
@@ -82,7 +103,7 @@ class Game():
                     return lastPlayer#self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
                 else:
                     # Question Succeeded
-                    print("Question Succeeded!")                   
+                    print("Question Succeeded!")
                     lastPlayer.insert_cards(self.board.GetDisplayArea())
                     self.board.ClearDisplay()
                     return currentPlayer
@@ -95,7 +116,7 @@ class Game():
                     # lastplayer = firstplayer = nextplayer
                     return lastPlayer
 
-            elif (playerInfo['Choice'] == 'Follow'):                
+            elif (playerInfo['Choice'] == 'Follow'):
                 # Actual Played Card may differ from what he claimed
                 currentPlayer.play_cards(playerInfo['Cards'])
                 self.board.Display(playerInfo['Cards'])
@@ -126,7 +147,7 @@ class Game():
         for hand in self.board.Deal(cardsPerPlayer, len(self.players)):
             self.players[index].initial_cards(hand)
             index += 1
-        return 
+        return
 
 if __name__ == "__main__":
     Game()
