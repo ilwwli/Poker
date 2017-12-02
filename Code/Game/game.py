@@ -58,7 +58,7 @@ class Game():
             # when passcount = 0, lastplayer = currentplayer - 1
             lastPlayer = self.players[self.players.index(currentPlayer) - PassCount - 1]
 
-            if (playerInfo['Win']):
+            if not currentPlayer.cards:
                 if playerInfo['Choice'] == 'Claim':
                     temp = []
                     for i in playerInfo['Cards']:
