@@ -1,4 +1,4 @@
-﻿
-Code/GUI/**
+﻿Code/GUI/**
 Code/Game/__pycache__/**
+.vscode/**
 *.pyc
