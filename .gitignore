@@ -1,6 +1,4 @@
-﻿Code/GUI/**
-Code/Game/__pycache__/**
+﻿**/__pycache__/**
 .vscode/**
 *.pyc
-*.pyc
-*.pyc
+
