@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>   
+    <title>Card Test</title>
+    <script>
+    function clickCard(self)
+    {  
+      if(self.data)
+      {
+        self.style.cssText = "position:relative;top:0px;"
+        self.data = 0
+      }
+      else
+      {
+        self.style.cssText = "position:relative;top:-20px;"
+        self.data = 1
+      }  
+    }
+    </script>
+  </head>
+  <body>
+    Your Hand:
+    <hr>
+    {% with cards = get_flashed_messages(category_filter=["cards"]) %}
+    {% if cards %}
+    <div class="cards", id = "cards">      
+        {% for card in cards %}
+        <!img src = "../static/pokerimg/h5.jpg", alt = {{card}}>
+        <img src = {{card}}, alt = {{card}}, onclick="clickCard(this)">
+        {% endfor %}     
+    </div>
+    {% else %}    
+    You Have No Cards HAHAHA!
+    {% endif %}
+    {% endwith %}
+    <hr>
+  </body>
+</html>
+<title>A test for cards</title>
+

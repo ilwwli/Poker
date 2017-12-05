@@ -19,3 +19,11 @@ def login():
             flash('You were successfully logged in')
             return redirect(url_for('index'))
     return render_template('login.html', error=error)
+
+@app.route('/play', methods = ['GET', 'POST'])
+def play():
+    cards = ['h5','h6','da']    
+    for card in cards:
+        imagesrc = ("../static/pokerimg/%s.jpg " % card)
+        flash(imagesrc,category='cards')
+    return render_template('cards.html')
