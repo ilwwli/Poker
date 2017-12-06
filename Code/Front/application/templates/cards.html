@@ -21,7 +21,8 @@
         <div class="cardlist", id = "cardlist">      
             {% for card in cards %}
             <!img src = "../static/pokerimg/h5.jpg", alt = {{card}}>
-            <img src = {{card}}, alt = {{card}}, onclick="clickCard(this)", class = "a_card">
+            <img src = {{card[1]}}, alt = {{card}}, 
+                onclick="clickCard(this)", class = "a_card", id = {{card[0]}}>
             {% endfor %}     
         </div>
         <button type="button", onclick = "submitChosen()">Submit!</button>
@@ -32,8 +33,7 @@
         {% endif %}
         {% endwith %}
         <hr>
-        <script>
-            var all_cards = document.getElementsByClassName("a_card")
+        <script>            
             function clickCard(self)
             {  
                 if(self.chosen)
@@ -49,29 +49,32 @@
             }
             function submitChosen()
             {
-                var chosen_cards = new Array()                
-                for(card in all_cards.length)
-                {
+                var all_cards = document.getElementsByClassName("a_card")
+                var chosen_cards = ""                
+                for(card in all_cards)
+                {                    
                     if (all_cards[card].chosen)
-                        chosen_cards.push(all_cards[card])
-                }
-                alert(all_cards)
-                alert(chosen_cards)
-                alert(window.location.pathname)
-                var subForm = document.createElement("form")
-                subForm.method = "post"
-                subForm.action = window.location.pathname
-                subForm.style.display = "none";
-                var subInput = document.createElement("input")
-                subInput.name = 'Cards'
-                subInput.value = 'chosen_cards'
-                subForm.appendChild(subInput)
-                document.body.appendChild(subForm);  
-                subForm.submit();  
-                document.body.removeChild(subForm);
+                    {                       
+                        chosen_cards += all_cards[card].id
+                    }
+                }                    
+                var form = document.createElement("form");
+                form.setAttribute("method", "put");
+                form.setAttribute("action", "");               
+                
+                var hiddenField = document.createElement("input");
+                hiddenField.setAttribute("type", "hidden");
+                hiddenField.setAttribute("name", "Cards");
+                hiddenField.setAttribute("value",chosen_cards);
+    
+                form.appendChild(hiddenField);
+                        
+                document.body.appendChild(form);
+                form.submit();                
             }
             function clearAll()
             {               
+                var all_cards = document.getElementsByClassName("a_card")
                 for(card in all_cards)
                 {
                     all_cards[card].style.cssText = "position:relative;top:0px;"

@@ -19,21 +19,26 @@ def login():
             return redirect(url_for('play'))
     return render_template('login.html', error=error)
 
+cards = ['h5','da','h5','h8','wangsmall','d4','s8','d4'] 
 # --- Game Page ---
-@app.route('/play', methods = ['GET', 'POST'])
+@app.route('/play', methods = ['GET', 'PUT'])
 def play():
-    if request.method == 'POST':
-        print(request.form['cards'])
-        flash('Submit Got', category='error')
-        return render_template('cards.html')
     if 'username' not in session:
-        flash('Skip Login', category='error')        
-        return redirect(url_for('login'))
-    cards = ['h5','h6','da','h5','h8','wangsmall','s8','d4','s8','d4','s8','d4','s8','d4'] 
-    for card in cards:
-        imagesrc = ("../static/pokerimg/%s.jpg " % card)
-        flash(imagesrc, category='cards')
-    return render_template('cards.html')
+            flash('Skip Login Error', category='error')        
+            return redirect(url_for('login'))
+    else:
+        if request.method == 'PUT':            
+            flash('Submit Got', category='error')
+            cards.pop()
+            for card in cards:
+                imagesrc = [card, "../static/pokerimg/%s.jpg " % card]
+                flash(imagesrc, category='cards')
+            return render_template('cards.html')
+        else:
+            for card in cards:
+                imagesrc = [card, "../static/pokerimg/%s.jpg " % card]
+                flash(imagesrc, category='cards')
+            return render_template('cards.html')
 
 # --- Home Page ---
 @app.route('/', methods=['GET'])
