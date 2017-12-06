@@ -49,7 +49,7 @@
             }
             function submitChosen()
             {
-                var all_cards = document.getElementsByClassName("a_card")
+                var all_cards = document.getElementById("cardlist").getElementsByClassName("a_card")
                 var chosen_cards = ""                
                 for(card in all_cards)
                 {                    
@@ -60,7 +60,7 @@
                 }                    
                 var form = document.createElement("form");
                 form.setAttribute("method", "put");
-                form.setAttribute("action", "");               
+                form.setAttribute("action", "");
                 
                 var hiddenField = document.createElement("input");
                 hiddenField.setAttribute("type", "hidden");
@@ -70,7 +70,7 @@
                 form.appendChild(hiddenField);
                         
                 document.body.appendChild(form);
-                form.submit();                
+                form.submit();
             }
             function clearAll()
             {               
