@@ -19,7 +19,7 @@ def login():
             return redirect(url_for('play'))
     return render_template('login.html', error=error)
 
-cards = ['h5','da','h5','h8','wangsmall','d4','s8','d4'] 
+cards = ['h5','da','c5','s8','d5','c4','s8','h4'] 
 # --- Game Page ---
 @app.route('/play', methods = ['GET', 'PUT'])
 def play():
@@ -27,18 +27,16 @@ def play():
             flash('Skip Login Error', category='error')        
             return redirect(url_for('login'))
     else:
-        if request.method == 'PUT':            
-            flash('Submit Got', category='error')
-            cards.pop()
-            for card in cards:
-                imagesrc = [card, "../static/pokerimg/%s.jpg " % card]
-                flash(imagesrc, category='cards')
-            return render_template('cards.html')
-        else:
-            for card in cards:
-                imagesrc = [card, "../static/pokerimg/%s.jpg " % card]
-                flash(imagesrc, category='cards')
-            return render_template('cards.html')
+        alpha = request.args.get('Cards')
+        if alpha:
+            alpha = alpha.split(',')
+            print(alpha)
+            for card in alpha[:-1]:                
+                cards.remove(card)
+        for card in cards:
+            imagesrc = [card, "../static/pokerimg/%s.jpg " % card]
+            flash(imagesrc, category='cards')
+        return render_template('cards.html')
 
 # --- Home Page ---
 @app.route('/', methods=['GET'])

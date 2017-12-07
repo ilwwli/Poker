@@ -1,88 +1,70 @@
-<!doctype html>
-<html>
-    <head>   
-        <title>Card Test</title>        
-    </head>
-    <body>
-        {% with messages = get_flashed_messages(category_filter=["error"]) %}
-        {% if messages %}
-            <ul class=flashes>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-        {% endwith %}
-        <hr>
-        Your Hand:
-        <hr>
-        {% with cards = get_flashed_messages(category_filter=["cards"]) %}
-        {% if cards %}
+{% extends "layout.html" %}
+{% block body %}
+    Your Hand:
+    <hr>
+    {% with cards = get_flashed_messages(category_filter=["cards"]) %}
+    {% if cards %}
         <div class="cardlist", id = "cardlist">      
             {% for card in cards %}
             <!img src = "../static/pokerimg/h5.jpg", alt = {{card}}>
             <img src = {{card[1]}}, alt = {{card}}, 
-                onclick="clickCard(this)", class = "a_card", id = {{card[0]}}>
+                onclick="clickCard(this)", class = "a_card", id = {{card[0]}}, name = "a_card">
             {% endfor %}     
         </div>
         <button type="button", onclick = "submitChosen()">Submit!</button>
-        <button type="button", onclick = "clearAll()">Clear All</button>
-        
-        {% else %}    
-        You Have No Cards HAHAHA!
-        {% endif %}
-        {% endwith %}
-        <hr>
-        <script>            
-            function clickCard(self)
-            {  
-                if(self.chosen)
-                {
-                    self.style.cssText = "position:relative;top:0px;"
-                    self.chosen = false
-                }
-                else
-                {
-                    self.style.cssText = "position:relative;top:-20px;"
-                    self.chosen = true
-                }  
-            }
-            function submitChosen()
+        <button type="button", onclick = "clearAll()">Clear All</button>    
+    {% else %}    
+        <p>You Have No Cards HAHAHA!</p>
+    {% endif %}
+    {% endwith %}
+    <hr>
+    <script>
+        var all_cards = document.getElementsByName("a_card")            
+        function clickCard(self)
+        {  
+            if(self.chosen)
             {
-                var all_cards = document.getElementById("cardlist").getElementsByClassName("a_card")
-                var chosen_cards = ""                
-                for(card in all_cards)
-                {                    
-                    if (all_cards[card].chosen)
-                    {                       
-                        chosen_cards += all_cards[card].id
-                    }
-                }                    
-                var form = document.createElement("form");
-                form.setAttribute("method", "put");
-                form.setAttribute("action", "");
-                
-                var hiddenField = document.createElement("input");
-                hiddenField.setAttribute("type", "hidden");
-                hiddenField.setAttribute("name", "Cards");
-                hiddenField.setAttribute("value",chosen_cards);
-    
-                form.appendChild(hiddenField);
-                        
-                document.body.appendChild(form);
-                form.submit();
+                self.style.cssText = "position:relative;top:0px;"
+                self.chosen = false
             }
-            function clearAll()
-            {               
-                var all_cards = document.getElementsByClassName("a_card")
-                for(card in all_cards)
-                {
-                    all_cards[card].style.cssText = "position:relative;top:0px;"
-                    all_cards[card].chosen = false
+            else
+            {
+                self.style.cssText = "position:relative;top:-20px;"
+                self.chosen = true
+            }  
+        }
+        function submitChosen()
+        {            
+            var chosen_cards = ""                
+            for(card in all_cards)
+            {                    
+                if (all_cards[card].chosen)
+                {                       
+                    chosen_cards += all_cards[card].id
                 }
+            }                    
+            var form = document.createElement("form");
+            form.setAttribute("method", "put");
+            form.setAttribute("action", "");
+            
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", "Cards");
+            hiddenField.setAttribute("value",chosen_cards);
+
+            form.appendChild(hiddenField);
+                    
+            document.body.appendChild(form);
+            form.submit();
+        }
+        function clearAll()
+        {            
+            for(card in all_cards)
+            {
+                all_cards[card].style.cssText = "position:relative;top:0px;"
+                all_cards[card].chosen = false
             }
-            </script>
-    </body>
-</html>
-<title>A test for cards</title>
+        }
+    </script>
+{% endblock %}
 

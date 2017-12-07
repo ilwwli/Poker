@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>        
+        <!-- jQuery Library 
+        <meta charset="UTF-8">        
+        <script src="//lib.sinaapp.com/js/jquery/1.12.4/jquery-1.12.4.min.js"></script>  
+        <!-- Common Head Parts -->
+        <title>Trick Game</title>
+        <!-- Head Block Entrance -->
+        {% block head %}{% endblock %}     
+    </head>
+    <body>
+        <!-- Common Head Parts -->
+        <h1 align="center">Trick Game </h1>
+        <hr>
+        <!-- Error Messages -->
+        {% with messages = get_flashed_messages(category_filter=["error"]) %}
+        {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+            <hr>
+        {% endif %}
+        {% endwith %}
+        <!-- Body Block Entrance -->
+        {% block body %}{% endblock %}
+    </body>
+</html>
