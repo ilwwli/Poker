@@ -1,9 +1,21 @@
 {% extends "layout.html" %}
 {% block body %}
     Your Hand:
-    <hr>
+    <hr>    
     {% with cards = get_flashed_messages(category_filter=["cards"]) %}
     {% if cards %}
+        {% with options = get_flashed_messages(category_filter=["options"]) %}
+        <form>
+            {% for op in options %}
+            {% if loop.first %}
+            <input type="radio" name="option" value="{{op}}" checked>{{op}}
+            {% else %}
+            <input type="radio" name="option" value="{{op}}">{{op}}
+            {% endif %}
+            {% endfor %}
+            <hr>
+        </form>
+        {% endwith %}
         <div class="cardlist", id = "cardlist">      
             {% for card in cards %}
             <!img src = "../static/pokerimg/h5.jpg", alt = {{card}}>
@@ -19,7 +31,8 @@
     {% endwith %}
     <hr>
     <script>
-        var all_cards = document.getElementsByName("a_card")            
+        var all_cards = document.getElementsByName("a_card")
+        var all_options = document.getElementsByName("option")   
         function clickCard(self)
         {  
             if(self.chosen)
@@ -42,17 +55,33 @@
                 {                       
                     chosen_cards += all_cards[card].id
                 }
-            }                    
+            }
+            var chosen_option
+            for(op in all_options)
+            {
+                if(all_options[op].checked)
+                {
+                    chosen_option = all_options[op].value
+                    break
+                }
+            }
             var form = document.createElement("form");
             form.setAttribute("method", "put");
             form.setAttribute("action", "");
-            
-            var hiddenField = document.createElement("input");
-            hiddenField.setAttribute("type", "hidden");
-            hiddenField.setAttribute("name", "Cards");
-            hiddenField.setAttribute("value",chosen_cards);
 
-            form.appendChild(hiddenField);
+            var hiddenField1 = document.createElement("input");
+            hiddenField1.setAttribute("type", "hidden");
+            hiddenField1.setAttribute("name", "Option");
+            hiddenField1.setAttribute("value",chosen_option);
+
+            form.appendChild(hiddenField1);
+            
+            var hiddenField2 = document.createElement("input");
+            hiddenField2.setAttribute("type", "hidden");
+            hiddenField2.setAttribute("name", "Cards");
+            hiddenField2.setAttribute("value",chosen_cards);            
+
+            form.appendChild(hiddenField2);
                     
             document.body.appendChild(form);
             form.submit();

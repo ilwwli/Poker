@@ -19,7 +19,8 @@ def login():
             return redirect(url_for('play'))
     return render_template('login.html', error=error)
 
-cards = ['h5','da','c5','s8','d5','c4','s8','h4'] 
+cards = ['h5','da','c5','s8','d5','c4','s8','h4']
+options = ['claim', 'follow', 'question', 'pass'] 
 # --- Game Page ---
 @app.route('/play', methods = ['GET', 'PUT'])
 def play():
@@ -28,14 +29,20 @@ def play():
             return redirect(url_for('login'))
     else:
         alpha = request.args.get('Cards')
+        beta = request.args.get('Option')
         if alpha:
             alpha = alpha.split(',')
             print(alpha)
-            for card in alpha[:-1]:                
-                cards.remove(card)
+            for card in alpha[:-1]:
+                if card in cards:               
+                    cards.remove(card)
+        if beta:
+            flash("your last choice is %s" % beta, category='error')
         for card in cards:
             imagesrc = [card, "../static/pokerimg/%s.jpg " % card]
             flash(imagesrc, category='cards')
+        for op in options:
+            flash(op, category='options')
         return render_template('cards.html')
 
 # --- Home Page ---
