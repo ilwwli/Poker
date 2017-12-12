@@ -1,6 +1,10 @@
 from flask import flash, redirect, render_template, \
      request, url_for, session
 from application import app
+import card
+import player
+import board
+import game
 
 app.user_name = "admin"
 app.secret_key = "admin"
@@ -19,7 +23,33 @@ def login():
             return redirect(url_for('play'))
     return render_template('login.html', error=error)
 
-cards = ['h5','da','c5','s8','d5','c4','s8','h4']
+card.FullDeck()
+board = board.GameBoard()
+game = game.Game()
+players = []
+player_numbers = 4
+player_names = ['a','b','c','d']
+players = game.set_player_numbers(player_numbers, player_names)
+board.ResetBoard()
+cardsPerPlayer = int(54 * 2 / len(players))
+index = 0
+cards = []
+for hand in board.Deal(cardsPerPlayer, len(players)):
+    players[index].initial_cards(hand)
+    index += 1
+players[0].cards.sort()
+def Cards2StandardCards(cards, num):
+    temp = []
+    for i in range(num):
+        temp.append(str(cards[i].suit + cards[i].rank))
+    return temp
+
+cards = Cards2StandardCards(players[0].cards, len(players[0].cards))
+print (cards)
+
+
+
+# cards = ['h5','da','c5','s8','d5','c4','s8','h4']
 options = ['claim', 'follow', 'question', 'pass'] 
 # --- Game Page ---
 @app.route('/play', methods = ['GET', 'PUT'])
