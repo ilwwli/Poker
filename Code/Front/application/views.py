@@ -6,7 +6,7 @@ from .src import *
 # import player
 # import board
 # import game
-
+# print('view!!')
 APP.user = {'admin':'admin',
             'player1':'player1', 'player2':'player2',
             'player3':'player3', 'player4':'player4'}
@@ -38,11 +38,9 @@ def login():
     return render_template('login.html', error=error)
 
 @APP.route('/config', methods=['GET', 'POST'])
-def config():
-    flash('config page is not finished now, please use player1:player1', category='error')
+def config():   
+    flash('game started', category='error')
     return redirect(url_for('login'))
-
-
 
 # cards = ['h5','da','c5','s8','d5','c4','s8','h4']
 # options = ['claim', 'follow', 'question', 'pass']
@@ -55,19 +53,21 @@ def play():
     if session['username'] not in GAME.player_names:
         flash('Login Expired', category='error')
         return redirect(url_for('login'))
-    # Normal Routine
-    print(session['player'])
-    print(GAME.players)
+    # print(GAME.player)
+    print(GAME.current_player_numbers)
+    print(GAME.player_numbers)
+    # Normal Routine   
     if GAME.WAITING:
         flash("Waiting for other players to join!", category='error')
     else:
         cards, options = GAME.players[session['player']].refresh()
-        # -- deal with parameters --
-        # Needs reform
+        cards = [str(card).lower() for card in cards] # reform cards
+        # -- deal with parameters --        
         choose_cards = request.args.get('Cards')[:-1] if request.args.get('Cards') else []
+        choose_cards_reform = [cards.Card(card[0].upper(),card[1:].upper()) for card in choose_cards]
         choose_option = request.args.get('Option')
         choose_claim = {'claim_length':len(choose_cards), 'claim_rank':'A'} # placeholder
-        if GAME.players[session['player']].send_choices(choose_option, choose_cards, choose_claim):
+        if GAME.players[session['player']].send_choices(choose_option, choose_cards_reform, choose_claim):
             if choose_option == 'Claim' or choose_option == 'Follow':
                 for card in choose_cards:
                     if card in cards:

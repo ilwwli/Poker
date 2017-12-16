@@ -123,7 +123,11 @@ class Game():
             currentPlayer = self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
             continue # Continue this turn
 
-    def run_game(self):        
+    def run_game(self):
+        while self.current_player_numbers < self.player_numbers:
+            continue
+        print('run fin')
+        self.WAITING = False
         self.reset_game()
         currentPlayer = random.choice(self.players)
         while(currentPlayer):

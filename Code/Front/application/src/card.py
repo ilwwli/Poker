@@ -6,11 +6,12 @@ class Card():
         self.rank = rank  # rank is poker number
 
     def __str__(self):
-        d = {'H':u'♥', 'S':u'♠', 'D':u'♦', 'C':u'♣', 'W':None}
-        if d[self.suit]:
-            return d[self.suit] + str(self.rank)
-        else:
-            return u'joker' if self.rank == 'w' else u'JOKER'
+        return self.suit + self.rank
+        # d = {'H':u'♥', 'S':u'♠', 'D':u'♦', 'C':u'♣', 'W':None}
+        # if d[self.suit]:
+        #     return d[self.suit] + str(self.rank)
+        # else:
+        #     return u'joker' if self.rank == 'w' else u'JOKER'
 
     def __eq__(self, othercard):
         return Card.rank2num(self.rank) == Card.rank2num(othercard.rank)

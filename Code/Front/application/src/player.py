@@ -59,6 +59,7 @@ class Player:
                 self.args['Cards'] = cardlist
             if claim and option == 'Claim':
                 self.args['Claim'] = claim
+            self.turn_result_available.set()
             return True
         else:
             return False
