@@ -5,10 +5,14 @@ from threading import Event
 from . import card
 class Player:
     def __init__(self, id, name = 'PlayerUnknown'):
+        # attributes
         self.id = id
         self.name = name
         self.cards = []
+        # C/S arguments
         self.args = {}
+        self.new_turn = False
+        # C/S syn control
         self.turn_result_available = Event()  # server can get result
         self.turn_result_available.clear()
         self.turn_start = Event()  # client should gather input
@@ -16,12 +20,6 @@ class Player:
 
     def initial_cards(self, cardlist):
         self.cards = cardlist
-
-    # def _display_cards(self):
-    #     self.cards.sort()
-    #     for card in self.cards:
-    #         print(card, end = ' ')
-    #     print()
 
     # ---- interface for server ----
     def play_cards(self, cardlist):
@@ -32,123 +30,33 @@ class Player:
         self.cards += cardlist
 
     def get_turn(self, new_turn) -> dict:
+        self.new_turn = new_turn
+        self.turn_start.set()
         self.turn_result_available.wait()
         self.turn_result_available.clear()
         return self.args
-    
+    # -------- END --------
+
+    # ---- interface for client ----
     def refresh(self) -> list:
         if self.turn_start.is_set():
-            self.turn()
+            if self.new_turn:
+                options = ['Claim']
+            else:
+                options = ['Follow', 'Question', 'Pass']
+            return [self.cards,options]
+        else:
+            return [self.cards,[]]
+
+    def send_choices(self, option:str, *cardlist:list, claim:dict = {}) -> bool:
+        if self.turn_start.is_set():
             self.turn_start.clear()
-            return self.cards
+            self.args['Choice'] = option # option should be 'Claim', 'Question', 'Pass', 'Follow'
+            if cardlist:
+                self.args['Cards'] = cardlist
+            if claim and option == 'Claim':
+                self.args['Claim'] = claim
+            return True
         else:
-            return self.cards
-    def turn(self, new_turn):
-        # Generate Options
-        options = []
-        if new_turn:
-            options = ['Claim']
-        else:
-            options = ['Follow', 'Question', 'Pass']
-        self.arg = yield options
-
-        # if new_turn:
-        #     options['Claim'] = self._choose_claim
-        # else:
-        #     options['Follow'] = self._choose_follow
-        #     options['Question'] = self._choose_question
-        #     options['Pass'] = self._choose_pass
-        
-
-        # print("Your Options are as follows:")
-        # optionlist = []
-        # for ind, option in enumerate(options, 1):
-        #     print("%s : %d" % (option, ind), end='\t')
-        #     optionlist.append(option)
-        # print("Input your choice")
-        # choice = self._get_number(len(optionlist), 1)
-        # arg['Choice'] = optionlist[choice - 1]
-        # options[optionlist[choice - 1]](arg) # Execute Option Function
-
-        # Final Judgements
-        # Nothing to do here
-        # return arg
-
-    # def _choose_question(self, arg: dict, choosed_cardlist: list):
-    #     return
-
-    # def _choose_follow(self, arg: dict, choosed_cardlist: list):
-    #     # print("Type how many cards you want to follow:")
-    #     # num = self._get_number(len(self.cards), 1)
-    #     # arg['Cards'] = self._input_card_list(num)
-    #     return
-
-    # def _choose_pass(self, arg: dict, choosed_cardlist: list):
-    #     return
-
-    # def _choose_claim(self, arg: dict, choosed_cardlist: list):
-    #     print("A new round start with you, please claim.")
-    #     print("Claim example: 5 J for 5 'J' cards, you cannot claim 'W' or >10 cards")
-    #     claim = []
-    #     while 1:
-    #         claim = input("Please make your claim:")
-    #         claim = claim.strip().split()
-    #         if len(claim) != 2:
-    #             continue
-    #         # judge Number argument
-    #         if not claim[0].isdigit:
-    #             continue
-    #         else:
-    #             claim[0] = int(claim[0])
-    #             if claim[0] <= 0 or claim[0] > 10:
-    #                 continue
-    #         # judge Rank argument
-    #         if len(claim[1]) != 1:
-    #             if(claim[1]) == '10':
-    #                 break
-    #             continue
-    #         else:
-    #             claim[1] = claim[1].upper()
-    #             if claim[1] not in ['2', '3', '4', '5', '6', '7',
-    #                                 '8', '9', 'J', 'Q', 'K', 'A']:
-    #                 continue
-    #         break
-    #     arg['Claim'] = {'claim_length' : int(claim[0]), 'claim_rank' : claim[1]}
-    #     arg['Cards'] = self._input_card_list(int(claim[0]))
-
-    # def _input_card_list(self, num) -> list:
-    #     print("""   Please Input Card List, Example:
-    #                 H5/h5 for five of hearts,
-    #                 ww/Ww for joker, WW/wW for JOKER
-    #                 sj/sJ/Sj/SJ for jack of spades""")
-    #     while 1:
-    #         string = input("Input now:")
-    #         templist = string.strip().split()
-    #         templist = [(string[0], string[1:]) for string in templist]
-    #         print(templist)
-    #         templist = [(suit.upper(), rank.upper()) if suit.upper() != 'W' else (suit.upper(), rank) \
-    #                     for suit, rank in templist]
-    #         print(templist)
-    #         cardlist = [card.Card(suit,rank) for suit,rank in templist]
-    #         if len(cardlist) != num:
-    #             print('length error')
-    #             continue
-    #         delta = Counter(self.cards)
-    #         delta.subtract(cardlist)
-    #         #print(delta.items())
-    #         if all(map(lambda x: x >= 0, delta.values())):
-    #             return cardlist
-    #         print('not in hand')
-
-    # def _get_number(self, maxm, minm = 0) -> int:
-    #     if maxm < minm:
-    #         return minm
-    #     while 1:
-    #         num = input("Input a number: ")
-    #         if num.isdigit():
-    #             num = int(num)
-    #             if num <= maxm and num >= minm:
-    #                 return num
-
-    # def print_log(self, string):
-    #     print(string)
+            return False
+    # -------- END --------
