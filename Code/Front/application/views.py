@@ -1,7 +1,7 @@
 from flask import flash, redirect, render_template, \
      request, url_for, session
 from application import APP,GAME
-from src import *
+from .src import *
 # import card
 # import player
 # import board
@@ -39,7 +39,8 @@ def login():
 
 @APP.route('/config', methods=['GET', 'POST'])
 def config():
-    return redirect(url_for('play'))
+    flash('config page is not finished now, please use player1:player1', category='error')
+    return redirect(url_for('login'))
 
 
 

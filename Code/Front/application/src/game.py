@@ -25,7 +25,7 @@ class Game():
         self.current_player_numbers = 0
         self.pack_num = 0
         card.FullDeck() # initial card.FullDeck
-        # self.init_game()
+        self.init_game()
         # self.run_game()
 
     # def set_player_numbers(self, player_numbers, player_names):        
