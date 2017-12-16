@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import random
-import player
-import card
-import board
+from . import player
+from . import card
+from . import board
 
 # import math
 # from player import Player
@@ -32,21 +32,24 @@ class Game():
         #print (len(self.players))
         #print (self.players[0].display_cards())
 
-    def init_game(self):
+    def init_game(self, player_number = 4, pack_number = 2):
         '''
         Parameters that will not change till the program ends
             will be initialized in this function.
         Paremeters that are initialized here include:
             player_numbers
-            player_name for each player
+            player_id for each player
             pack_numbers
         '''
-        player_numbers = int(input("How many players?\n"))
-        player_names = []
-        for i in range(player_numbers):
-            player_names.append(input("\nType player%d's name:\t" % i) + str(i))
-        self.set_player_numbers(player_numbers, player_names)
-        self.pack_num = int(input("How many decks do you want to play?\n"))
+        self.pack_num = pack_number
+        self.players = [player.Player(i) for i in range(1, player_number + 1)]
+        # player_numbers = int(input("How many players?\n"))
+        # player_names = []
+        # for i in range(player_number):
+        #     player_names.append(input("\nType player%d's name:\t" % i) + str(i))
+        # self.set_player_numbers(player_numbers, player_names)
+        # self.pack_num = int(input("How many decks do you want to play?\n"))
+
 
     def next_round(self, currentPlayer):
         PassCount = 0
@@ -55,7 +58,7 @@ class Game():
         while (True):
             # for i in self.board.GetDisplayArea():
             #     print(i, end = ' ')
-            playerInfo = currentPlayer.turn(IsNewTurn)
+            playerInfo = currentPlayer.get_turn_result(IsNewTurn)
             IsNewTurn = False
             # when passcount = 0, lastplayer = currentplayer - 1
             lastPlayer = self.players[self.players.index(currentPlayer) - PassCount - 1]

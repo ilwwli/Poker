@@ -1,4 +1,6 @@
 from flask import Flask
-
-app = Flask(__name__)
+from .src import *
+APP = Flask(__name__)
+GAME = game.Game()
 from application import views
+

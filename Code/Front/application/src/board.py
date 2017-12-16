@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from random import shuffle
-from card import FullDeck
+from .card import FullDeck
 
 class GameBoard():
     def __init__(self):
