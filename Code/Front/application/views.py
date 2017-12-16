@@ -1,6 +1,7 @@
 from flask import flash, redirect, render_template, \
      request, url_for, session
-from application import APP, GAME
+from application import APP,GAME
+from src import *
 # import card
 # import player
 # import board
@@ -8,7 +9,7 @@ from application import APP, GAME
 
 APP.user = {'admin':'admin',
             'player1':'player1', 'player2':'player2',
-            'player3':'player3', 'player5':'player5'}
+            'player3':'player3', 'player4':'player4'}
 
 # --- Login Page ---
 @APP.route('/login', methods=['GET', 'POST'])
@@ -18,14 +19,22 @@ def login():
         if request.form['username'] not in APP.user or \
                 request.form['password']  != APP.user[request.form['username']]:
             error = 'Invalid User'
+        # Admin
         elif request.form['username'] == 'admin':
             flash('You were successfully logged in', category='error')
             session['username'] = request.form['username']
             return redirect(url_for('config'))
+        # Player
         else:
             flash('You were successfully logged in', category='error')
-            session['username'] = request.form['username']
-            return redirect(url_for('play'))
+            player = GAME.login(request.form['username'])
+            if not player:
+                flash('No player available now', category='error')
+                return render_template('login.html', error=error)
+            else:
+                session['username'] = request.form['username']
+                session['player'] = player
+                return redirect(url_for('play'))
     return render_template('login.html', error=error)
 
 @APP.route('/config', methods=['GET', 'POST'])
@@ -34,8 +43,8 @@ def config():
 
 
 
-cards = ['h5','da','c5','s8','d5','c4','s8','h4']
-options = ['claim', 'follow', 'question', 'pass']
+# cards = ['h5','da','c5','s8','d5','c4','s8','h4']
+# options = ['claim', 'follow', 'question', 'pass']
 # --- Game Page ---
 @APP.route('/play', methods=['GET', 'POST'])
 def play():
@@ -43,16 +52,18 @@ def play():
             flash('Skip Login Error', category='error')
             return redirect(url_for('login'))
     else:
-        alpha = request.args.get('Cards')
-        beta = request.args.get('Option')
-        if alpha:
-            alpha = alpha.split(',')
-            print(alpha)
-            for card in alpha[:-1]:
-                if card in cards:
-                    cards.remove(card)
-        if beta:
-            flash("your last choice is %s" % beta, category='error')
+        cards, options = session['player'].refresh()
+        # -- deal with parameters --
+        choose_cards = request.args.get('Cards')[:-1] # Needs reform
+        choose_option = request.args.get('Option')
+        choose_claim = {'claim_length':len(choose_cards), 'claim_rank':'A'} # placeholder
+        if session['player'].send_choices(choose_option, choose_cards, choose_claim):
+            if choose_option == 'Claim' or choose_option == 'Follow':
+                for card in choose_cards:
+                    if card in cards:
+                        cards.remove(card)
+            flash("your last choice is %s" % choose_option, category='error')
+        # -- refresh page --
         for card in cards:
             imagesrc = [card, "../static/pokerimg/%s.jpg " % card]
             flash(imagesrc, category='cards')

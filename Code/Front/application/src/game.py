@@ -21,16 +21,18 @@ class Game():
         '''
         self.board = board.GameBoard()
         self.players = []
+        self.player_numbers = 0
+        self.current_player_numbers = 0
         self.pack_num = 0
         card.FullDeck() # initial card.FullDeck
         # self.init_game()
         # self.run_game()
 
-    def set_player_numbers(self, player_numbers, player_names):
-        self.players = [player.Player(name) for index, name in zip(range(player_numbers), player_names)]
-        return self.players
-        #print (len(self.players))
-        #print (self.players[0].display_cards())
+    # def set_player_numbers(self, player_numbers, player_names):        
+    #     self.players = [player.Player(name) for index, name in zip(range(player_numbers), player_names)]
+    #     return self.players
+    #     #print (len(self.players))
+    #     #print (self.players[0].display_cards())
 
     def init_game(self, player_number = 4, pack_number = 2):
         '''
@@ -41,6 +43,7 @@ class Game():
             player_id for each player
             pack_numbers
         '''
+        self.player_numbers = player_number
         self.pack_num = pack_number
         self.players = [player.Player(i) for i in range(1, player_number + 1)]
         # player_numbers = int(input("How many players?\n"))
@@ -141,6 +144,14 @@ class Game():
             self.players[index].initial_cards(hand)
             index += 1
         return
+    
+    def login(self, name:str) -> player:
+        if self.current_player_numbers >= self.player_numbers:
+            return None
+        else:
+            self.players[self.current_player_numbers].name = name
+            self.current_player_numbers += 1
+            return self.players[self.current_player_numbers - 1]
 
 if __name__ == "__main__":
     Game()
