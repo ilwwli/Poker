@@ -4,7 +4,7 @@ import random
 from . import player
 from . import card
 from . import board
-
+from threading import Event
 # import math
 # from player import Player
 
@@ -21,12 +21,14 @@ class Game():
         '''
         self.board = board.GameBoard()
         self.players = []
+        self.player_names = set()
         self.player_numbers = 0
         self.current_player_numbers = 0
         self.pack_num = 0
         card.FullDeck() # initial card.FullDeck
-        self.init_game()
-        # self.run_game()
+        # self.wait_for_all_users = Event() # wait for all users to login
+        self.WAITING = True # Waiting Flag
+        self.init_game()        
 
     # def set_player_numbers(self, player_numbers, player_names):        
     #     self.players = [player.Player(name) for index, name in zip(range(player_numbers), player_names)]
@@ -34,7 +36,7 @@ class Game():
     #     #print (len(self.players))
     #     #print (self.players[0].display_cards())
 
-    def init_game(self, player_number = 4, pack_number = 2):
+    def init_game(self, player_number = 1, pack_number = 2):
         '''
         Parameters that will not change till the program ends
             will be initialized in this function.
@@ -45,7 +47,7 @@ class Game():
         '''
         self.player_numbers = player_number
         self.pack_num = pack_number
-        self.players = [player.Player(i) for i in range(1, player_number + 1)]
+        # self.players = [player.Player(i) for i in range(1, player_number + 1)]
         # player_numbers = int(input("How many players?\n"))
         # player_names = []
         # for i in range(player_number):
@@ -61,7 +63,7 @@ class Game():
         while (True):
             # for i in self.board.GetDisplayArea():
             #     print(i, end = ' ')
-            playerInfo = currentPlayer.get_turn_result(IsNewTurn)
+            playerInfo = currentPlayer.get_turn(IsNewTurn)
             IsNewTurn = False
             # when passcount = 0, lastplayer = currentplayer - 1
             lastPlayer = self.players[self.players.index(currentPlayer) - PassCount - 1]
@@ -121,7 +123,7 @@ class Game():
             currentPlayer = self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
             continue # Continue this turn
 
-    def run_game(self):
+    def run_game(self):        
         self.reset_game()
         currentPlayer = random.choice(self.players)
         while(currentPlayer):
@@ -146,13 +148,16 @@ class Game():
         return
     
     def login(self, name:str) -> player:
-        if self.current_player_numbers >= self.player_numbers:
-            return None
+        if self.current_player_numbers >= self.player_numbers or name in self.player_names:
+            return -1
         else:
-            self.players[self.current_player_numbers].name = name
+            self.players.append(player.Player(name))            
+            self.player_names.add(name)
             self.current_player_numbers += 1
-            return self.players[self.current_player_numbers - 1]
-
+            if self.current_player_numbers == self.player_numbers:
+                self.WAITING = False
+            return self.current_player_numbers - 1
+        
 if __name__ == "__main__":
     Game()
 

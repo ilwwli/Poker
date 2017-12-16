@@ -4,19 +4,22 @@ from collections import Counter
 from threading import Event
 from . import card
 class Player:
-    def __init__(self, id, name = 'PlayerUnknown'):
-        # attributes
-        self.id = id
+    def __init__(self, name):
+        # attributes        
         self.name = name
         self.cards = []
         # C/S arguments
         self.args = {}
         self.new_turn = False
         # C/S syn control
-        self.turn_result_available = Event()  # server can get result
-        self.turn_result_available.clear()
-        self.turn_start = Event()  # client should gather input
-        self.turn_start.clear()
+        self.turn_result_available = Event()  # server can get result        
+        self.turn_start = Event()  # client should gather input        
+
+    # def __eq__(self, other):
+    #     return self.name == other.name
+
+    # def __hash__(self):
+    #     return hash('hash_of' + self.name)
 
     def initial_cards(self, cardlist):
         self.cards = cardlist
