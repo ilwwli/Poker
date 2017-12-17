@@ -64,32 +64,34 @@ def play():
     else:
         cards, options = GAME.players[session['player']].refresh()
         cards = [str(card).lower() for card in cards] # reform cards
+
         # -- deal with parameters -- 
-        choose_option = request.args.get('Option')  
-        if choose_option:  
-            choose_cards = request.args.get('Cards')[:-1] if request.args.get('Cards') else []
-            choose_cards = choose_cards.split(',')
-            print(choose_cards)
-            choose_cards_reform = [Card(card[0].upper(), card[1].upper())
+        choose_option = request.args.get('Option')
+        if request.args.get('Cards'):       
+            choose_cards = request.args.get('Cards')[:-1]
+            choose_cards = choose_cards.split(',')            
+            choose_cards_reform = [Card(card[0].upper(), card[1:].upper())
                 for card in choose_cards]
-            print('choose_cards_reform:')
-            print([str(c) for c in choose_cards_reform])
-            print()     
-            choose_claim = {'claim_length':len(choose_cards), 'claim_rank':'A'} # placeholder
-            GAME.players[session['player']].send_choices(choose_option, 
-                choose_cards_reform, claim = choose_claim)
-            # if choose_option == 'Claim' or choose_option == 'Follow':
-            #     for card in choose_cards:
-            #         if card in cards:
-            #             cards.remove(card)
-            # flash("your last choice is %s" % choose_option, category='error')
+        else:
+            choose_cards_reform = []
+        choose_claim = {'claim_length':len(choose_cards_reform), 'claim_rank':'A'} # placeholder
+        need_refresh = GAME.players[session['player']].send_choices(choose_option, 
+            *choose_cards_reform, claim = choose_claim)
+        # if choose_option == 'Claim' or choose_option == 'Follow':
+        #     for card in choose_cards:
+        #         if card in cards:
+        #             cards.remove(card)
+        # flash("your last choice is %s" % choose_option, category='error')
+
         # -- refresh page --
         for card in cards:
             imagesrc = [card, "../static/pokerimg/%s.jpg " % card]
             flash(imagesrc, category='cards')
-        for option in options:
-            flash(option, category='options')
-    return render_template('cards.html')
+        if not need_refresh:
+            for option in options:
+                flash(option, category='options')
+        print(need_refresh)
+    return render_template('cards.html', need_refresh = need_refresh)
 
 # --- Home Page ---
 @APP.route('/', methods=['GET'])

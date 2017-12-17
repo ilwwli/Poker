@@ -1,1 +1,1 @@
-__all__ =["board","card","game","player"]
+__all__ = ["board", "card", "game", "player"]

@@ -25,9 +25,7 @@ class Player:
         self.cards = cardlist
 
     # ---- interface for server ----
-    def play_cards(self, cardlist):
-        print('PLAYCARDS')
-        print(cardlist)
+    def play_cards(self, cardlist):        
         for card in cardlist:
             self.cards.remove(card)
 
@@ -39,7 +37,7 @@ class Player:
         self.turn_start.set()
         self.turn_result_available.wait()
         self.turn_result_available.clear()
-        print(self.args)
+        print([(i, type(self.args[i])) for i in self.args.keys()])
         return self.args
     # -------- END --------
 
@@ -56,14 +54,26 @@ class Player:
 
     def send_choices(self, option:str, *cardlist:list, claim:dict = {}) -> bool:
         if self.turn_start.is_set():
-            self.turn_start.clear()
-            self.args['Choice'] = option # option should be 'Claim', 'Question', 'Pass', 'Follow'
-            if cardlist:
-                self.args['Cards'] = cardlist
+            self.args = {} 
+            # option should be 'Claim', 'Question', 'Pass', 'Follow'           
+            if not option or option not in ['Claim', 'Question', 'Pass', 'Follow']:
+                return False            
+            else:                
+                self.args['Choice'] = option                
+            if cardlist:                
+                for card in cardlist:
+                    if card not in self.cards:
+                        return False
+                else:
+                    self.args['Cards'] = cardlist
             if claim and option == 'Claim':
-                self.args['Claim'] = claim
+                if claim['claim_length'] != len(cardlist):
+                    return False
+                else:
+                    self.args['Claim'] = claim            
             self.turn_result_available.set()
+            self.turn_start.clear()
             return True
         else:
-            return False
+            return True
     # -------- END --------

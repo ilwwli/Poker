@@ -15,16 +15,11 @@
             {% endif %}
             {% endfor %}
             <hr>
-        </form>
-        {% else %}
-        <script>    
-            setTimeout(function(){location.reload(true)}, 2000)
-        </script>    
+        </form>         
         {% endif %}
         {% endwith %}
         <div class="cardlist", id = "cardlist">      
-            {% for card in cards %}
-            <!img src = "../static/pokerimg/h5.jpg", alt = {{card}}>
+            {% for card in cards %}            
             <img src = {{card[1]}}, alt = {{card}}, 
                 onclick="clickCard(this)", class = "a_card", id = {{card[0]}}, name = "a_card">
             {% endfor %}     
@@ -100,6 +95,11 @@
                 all_cards[card].chosen = false
             }
         }
-    </script>    
+    </script>
+    {% if need_refresh %}
+    <script>    
+        setTimeout(function(){window.location = window.location.pathname}, 1000)
+    </script>
+    {% endif %}
 {% endblock %}
 
