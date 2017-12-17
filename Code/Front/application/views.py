@@ -1,12 +1,14 @@
 from flask import flash, redirect, render_template, \
      request, url_for, session
 from application import APP,GAME
-from .src import *
+from .src import player, game
+from .src.card import Card
 # import card
 # import player
 # import board
 # import game
-# print('view!!')
+print('view!!')
+# print(card.Card('A','10'))
 APP.user = {'admin':'admin',
             'player1':'player1', 'player2':'player2',
             'player3':'player3', 'player4':'player4'}
@@ -54,8 +56,8 @@ def play():
         flash('Login Expired', category='error')
         return redirect(url_for('login'))
     # print(GAME.player)
-    print(GAME.current_player_numbers)
-    print(GAME.player_numbers)
+    # print(GAME.current_player_numbers)
+    # print(GAME.player_numbers)
     # Normal Routine   
     if GAME.WAITING:
         flash("Waiting for other players to join!", category='error')
@@ -64,10 +66,12 @@ def play():
         cards = [str(card).lower() for card in cards] # reform cards
         # -- deal with parameters --        
         choose_cards = request.args.get('Cards')[:-1] if request.args.get('Cards') else []
-        choose_cards_reform = [cards.Card(card[0].upper(),card[1:].upper()) for card in choose_cards]
+        choose_cards_reform = [Card(card[0].upper(), card[1:].upper()) 
+                for card in choose_cards]
         choose_option = request.args.get('Option')
         choose_claim = {'claim_length':len(choose_cards), 'claim_rank':'A'} # placeholder
-        if GAME.players[session['player']].send_choices(choose_option, choose_cards_reform, choose_claim):
+        if GAME.players[session['player']].send_choices(choose_option, 
+                choose_cards_reform, choose_claim):
             if choose_option == 'Claim' or choose_option == 'Follow':
                 for card in choose_cards:
                     if card in cards:

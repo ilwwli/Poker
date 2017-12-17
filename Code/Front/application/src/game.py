@@ -6,7 +6,7 @@ from . import card
 from . import board
 from threading import Event
 # import math
-# from player import Player
+
 
 
 class Game():
@@ -28,6 +28,8 @@ class Game():
         card.FullDeck() # initial card.FullDeck
         # self.wait_for_all_users = Event() # wait for all users to login
         self.WAITING = True # Waiting Flag
+        self.wait_for_all_users = Event()
+        self.run_game_started = 0
         self.init_game()        
 
     # def set_player_numbers(self, player_numbers, player_names):        
@@ -124,10 +126,9 @@ class Game():
             continue # Continue this turn
 
     def run_game(self):
-        while self.current_player_numbers < self.player_numbers:
-            continue
-        print('run fin')
-        self.WAITING = False
+        print('start run')
+        self.run_game_started = 1
+        self.wait_for_all_users.wait()        
         self.reset_game()
         currentPlayer = random.choice(self.players)
         while(currentPlayer):
@@ -159,6 +160,7 @@ class Game():
             self.player_names.add(name)
             self.current_player_numbers += 1
             if self.current_player_numbers == self.player_numbers:
+                self.wait_for_all_users.set()
                 self.WAITING = False
             return self.current_player_numbers - 1
         

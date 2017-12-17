@@ -1,10 +1,11 @@
 {% extends "layout.html" %}
 {% block body %}
     Your Hand:
-    <hr>    
+    <hr>     
     {% with cards = get_flashed_messages(category_filter=["cards"]) %}
     {% if cards %}
         {% with options = get_flashed_messages(category_filter=["options"]) %}
+        {% if options %}        
         <form>
             {% for op in options %}
             {% if loop.first %}
@@ -15,6 +16,11 @@
             {% endfor %}
             <hr>
         </form>
+        {% else %}
+        <script>    
+            setTimeout(function(){location.reload(true)}, 2000)
+        </script>    
+        {% endif %}
         {% endwith %}
         <div class="cardlist", id = "cardlist">      
             {% for card in cards %}
@@ -94,6 +100,6 @@
                 all_cards[card].chosen = false
             }
         }
-    </script>
+    </script>    
 {% endblock %}
 
