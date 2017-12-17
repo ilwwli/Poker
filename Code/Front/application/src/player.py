@@ -37,7 +37,7 @@ class Player:
         self.turn_start.set()
         self.turn_result_available.wait()
         self.turn_result_available.clear()
-        print([(i, type(self.args[i])) for i in self.args.keys()])
+        # print([(i, type(self.args[i])) for i in self.args.keys()])
         return self.args
     # -------- END --------
 

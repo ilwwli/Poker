@@ -4,7 +4,7 @@ import random
 from . import player
 from . import card
 from . import board
-from threading import Event
+from threading import Event,Lock
 # import math
 
 
@@ -25,14 +25,19 @@ class Game():
         self.player_numbers = 0
         self.current_player_numbers = 0
         self.pack_num = 0
-        card.FullDeck() # initial card.FullDeck
-        # self.wait_for_all_users = Event() # wait for all users to login
+
         self.WAITING = True # Waiting Flag
         self.wait_for_all_users = Event()
         self.run_game_started = 0
-        self.init_game()        
 
-    # def set_player_numbers(self, player_numbers, player_names):        
+        self.log_lock = Lock()
+        self.log = ['', '', '', '']
+
+        # functions
+        card.FullDeck() # initial card.FullDeck
+        self.init_game()
+
+    # def set_player_numbers(self, player_numbers, player_names):
     #     self.players = [player.Player(name) for index, name in zip(range(player_numbers), player_names)]
     #     return self.players
     #     #print (len(self.players))
@@ -74,26 +79,29 @@ class Game():
                 lastPlayerClaim = playerInfo['Claim']
                 currentPlayer.play_cards(playerInfo['Cards'])
                 self.board.Display(playerInfo['Cards'])
+                self.write_log('%s claims %s card(s) of %s' % (currentPlayer.name,
+                    lastPlayerClaim['claim_length'], lastPlayerClaim['claim_rank']))
 
             elif playerInfo['Choice'] == 'Question':
                 LastPlayerCards = self.board.GetDisplayArea()[len(self.board.GetDisplayArea()) \
                             - lastPlayerClaim['claim_length']:] #- len(playerInfo['Cards']):]
-                temp = set([card.rank for card in LastPlayerCards]) - set('wW')
+                temp = set([card.rank for card in LastPlayerCards]) - set('BR')
                 if (not temp) or (temp == set(lastPlayerClaim['claim_rank'])):
                     # Question Failed
-                    print("Question Failed!")
+                    self.write_log('%s questions fail' % currentPlayer.name)
                     currentPlayer.insert_cards(self.board.GetDisplayArea())
                     self.board.ClearDisplay()
                     return lastPlayer#self.players[(self.players.index(currentPlayer) + 1) % len(self.players)]
                 else:
                     # Question Succeeded
-                    print("Question Succeeded!")
+                    self.write_log('%s questions succeed' % currentPlayer.name)
                     lastPlayer.insert_cards(self.board.GetDisplayArea())
                     self.board.ClearDisplay()
                     return currentPlayer
 
             elif playerInfo['Choice'] == 'Pass':
                 PassCount += 1
+                self.write_log('%s passes' % currentPlayer.name)
                 if PassCount == len(self.players) - 1:
                     # Everyone choose pass
                     self.board.ClearDisplay()
@@ -106,14 +114,16 @@ class Game():
                 self.board.Display(playerInfo['Cards'])
                 lastPlayerClaim['claim_length'] = len(playerInfo['Cards'])
                 PassCount = 0
+                self.write_log('%s follows %s card(s) of %s' % (currentPlayer.name,
+                    len(playerInfo['Cards']), lastPlayerClaim['claim_rank']))
 
             # Winner judgement
             if not currentPlayer.cards:
-                temp = set([card.rank for card in playerInfo['Cards']]) - set('wW')
+                temp = set([card.rank for card in playerInfo['Cards']]) - set('BR')
                 # lastPlayerClaim already updated here
                 if (not temp) or (temp == set(lastPlayerClaim['claim_rank'])):
                     # Played Cards == Claimed Cards
-                    print('Congratulations, you win!')
+                    self.write_log('%s wins' % currentPlayer.name)
                     return None
                 else:
                     # Played Cards != Claimed Cards
@@ -128,7 +138,7 @@ class Game():
     def run_game(self):
         # print('start run')
         self.run_game_started = 1
-        self.wait_for_all_users.wait()        
+        self.wait_for_all_users.wait()
         self.reset_game()
         currentPlayer = random.choice(self.players)
         while(currentPlayer):
@@ -151,19 +161,24 @@ class Game():
             self.players[index].initial_cards(hand)
             index += 1
         return
-    
+
     def login(self, name:str) -> player:
         if self.current_player_numbers >= self.player_numbers or name in self.player_names:
             return -1
         else:
-            self.players.append(player.Player(name))            
+            self.players.append(player.Player(name))
             self.player_names.add(name)
             self.current_player_numbers += 1
             if self.current_player_numbers == self.player_numbers:
                 self.wait_for_all_users.set()
                 self.WAITING = False
             return self.current_player_numbers - 1
+
+    def write_log(self, string:str):        
+        # with self.log_lock:
+        self.log = self.log[1:] +[string]
         
+
 if __name__ == "__main__":
     Game()
 

@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block body %}
     Your Hand:
-    <hr>     
+    <hr>
     {% with cards = get_flashed_messages(category_filter=["cards"]) %}
     {% if cards %}
         {% with options = get_flashed_messages(category_filter=["options"]) %}
-        {% if options %}        
+        {% if options %}
         <form>
             {% for op in options %}
             {% if loop.first %}
@@ -15,27 +15,27 @@
             {% endif %}
             {% endfor %}
             <hr>
-        </form>         
+        </form>
         {% endif %}
         {% endwith %}
-        <div class="cardlist", id = "cardlist">      
-            {% for card in cards %}            
-            <img src = {{card[1]}}, alt = {{card}}, 
+        <div class="cardlist", id = "cardlist">
+            {% for card in cards %}
+            <img src = {{card[1]}}, alt = {{card}},
                 onclick="clickCard(this)", class = "a_card", id = {{card[0]}}, name = "a_card">
-            {% endfor %}     
+            {% endfor %}
         </div>
         <button type="button", onclick = "submitChosen()">Submit!</button>
-        <button type="button", onclick = "clearAll()">Clear All</button>    
-    {% else %}    
+        <button type="button", onclick = "clearAll()">Clear All</button>
+    {% else %}
         <p>You Have No Cards HAHAHA!</p>
     {% endif %}
     {% endwith %}
     <hr>
     <script>
         var all_cards = document.getElementsByName("a_card")
-        var all_options = document.getElementsByName("option")   
+        var all_options = document.getElementsByName("option")
         function clickCard(self)
-        {  
+        {
             if(self.chosen)
             {
                 self.style.cssText = "position:relative;top:0px;"
@@ -45,15 +45,15 @@
             {
                 self.style.cssText = "position:relative;top:-20px;"
                 self.chosen = true
-            }  
+            }
         }
         function submitChosen()
-        {            
-            var chosen_cards = ""                
+        {
+            var chosen_cards = ""
             for(card in all_cards)
-            {                    
+            {
                 if (all_cards[card].chosen)
-                {                       
+                {
                     chosen_cards += all_cards[card].id
                 }
             }
@@ -76,19 +76,19 @@
             hiddenField1.setAttribute("value",chosen_option);
 
             form.appendChild(hiddenField1);
-            
+
             var hiddenField2 = document.createElement("input");
             hiddenField2.setAttribute("type", "hidden");
             hiddenField2.setAttribute("name", "Cards");
-            hiddenField2.setAttribute("value",chosen_cards);            
+            hiddenField2.setAttribute("value",chosen_cards);
 
             form.appendChild(hiddenField2);
-                    
+
             document.body.appendChild(form);
             form.submit();
         }
         function clearAll()
-        {            
+        {
             for(card in all_cards)
             {
                 all_cards[card].style.cssText = "position:relative;top:0px;"
@@ -97,7 +97,7 @@
         }
     </script>
     {% if need_refresh %}
-    <script>    
+    <script>
         setTimeout(function(){window.location = window.location.pathname}, 1000)
     </script>
     {% endif %}

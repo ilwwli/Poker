@@ -26,17 +26,17 @@ class Card():
     @staticmethod
     def islegal(card):
         if  hasattr(card, 'suit') and \
-            card.suit in ['H', 'S', 'D', 'C', 'W'] and \
-            hasattr(card, 'rank') and \
-            card.rank in ['2', '3', '4', '5', '6', '7', '8', '9', '10',
-                          'J', 'Q', 'K', 'A', 'w', 'W']:
+                card.suit in ['H', 'S', 'D', 'C', 'W'] and \
+                hasattr(card, 'rank') and \
+                card.rank in ['2', '3', '4', '5', '6', '7', '8', '9', '10',
+                          'J', 'Q', 'K', 'A', 'B', 'R']:
             return True
         return False
 
     @staticmethod
     def rank2num(rank):
         rank2numdict = {'2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9,
-                        '10':10, 'J':11, 'Q':12, 'K':13, 'A':14, 'w':15, 'W':16}
+                        '10':10, 'J':11, 'Q':12, 'K':13, 'A':14, 'B':15, 'R':16}
         return rank2numdict[rank]
 
 class FullDeck():
@@ -52,8 +52,8 @@ class FullDeck():
                 FullDeck.cards.append(Card(suit, NumberCard))
             for ColorCard in ColorCards:
                 FullDeck.cards.append(Card(suit, ColorCard))
-        FullDeck.cards.append(Card('W', 'w'))  # build the Jokers, W for Wang
-        FullDeck.cards.append(Card('W', 'W'))
+        FullDeck.cards.append(Card('W', 'B'))   # build the Jokers, W for Wang
+        FullDeck.cards.append(Card('W', 'R'))   # B for black joker, R for red joker
 
     @classmethod
     def GetFullDeck(self):
