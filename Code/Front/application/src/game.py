@@ -126,7 +126,7 @@ class Game():
             continue # Continue this turn
 
     def run_game(self):
-        print('start run')
+        # print('start run')
         self.run_game_started = 1
         self.wait_for_all_users.wait()        
         self.reset_game()

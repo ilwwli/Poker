@@ -26,6 +26,8 @@ class Player:
 
     # ---- interface for server ----
     def play_cards(self, cardlist):
+        print('PLAYCARDS')
+        print(cardlist)
         for card in cardlist:
             self.cards.remove(card)
 
@@ -37,6 +39,7 @@ class Player:
         self.turn_start.set()
         self.turn_result_available.wait()
         self.turn_result_available.clear()
+        print(self.args)
         return self.args
     # -------- END --------
 

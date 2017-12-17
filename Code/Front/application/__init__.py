@@ -12,4 +12,4 @@ import time
 if not GAME.run_game_started:
     _thread.start_new_thread(GAME.run_game,())
     # time.sleep(0.01)
-print('main end')
+# print('main end')

@@ -7,7 +7,7 @@ from .src.card import Card
 # import player
 # import board
 # import game
-print('view!!')
+# print('view!!')
 # print(card.Card('A','10'))
 APP.user = {'admin':'admin',
             'player1':'player1', 'player2':'player2',
@@ -64,19 +64,25 @@ def play():
     else:
         cards, options = GAME.players[session['player']].refresh()
         cards = [str(card).lower() for card in cards] # reform cards
-        # -- deal with parameters --        
-        choose_cards = request.args.get('Cards')[:-1] if request.args.get('Cards') else []
-        choose_cards_reform = [Card(card[0].upper(), card[1:].upper()) 
+        # -- deal with parameters -- 
+        choose_option = request.args.get('Option')  
+        if choose_option:  
+            choose_cards = request.args.get('Cards')[:-1] if request.args.get('Cards') else []
+            choose_cards = choose_cards.split(',')
+            print(choose_cards)
+            choose_cards_reform = [Card(card[0].upper(), card[1].upper())
                 for card in choose_cards]
-        choose_option = request.args.get('Option')
-        choose_claim = {'claim_length':len(choose_cards), 'claim_rank':'A'} # placeholder
-        if GAME.players[session['player']].send_choices(choose_option, 
-                choose_cards_reform, choose_claim):
-            if choose_option == 'Claim' or choose_option == 'Follow':
-                for card in choose_cards:
-                    if card in cards:
-                        cards.remove(card)
-            flash("your last choice is %s" % choose_option, category='error')
+            print('choose_cards_reform:')
+            print([str(c) for c in choose_cards_reform])
+            print()     
+            choose_claim = {'claim_length':len(choose_cards), 'claim_rank':'A'} # placeholder
+            GAME.players[session['player']].send_choices(choose_option, 
+                choose_cards_reform, claim = choose_claim)
+            # if choose_option == 'Claim' or choose_option == 'Follow':
+            #     for card in choose_cards:
+            #         if card in cards:
+            #             cards.remove(card)
+            # flash("your last choice is %s" % choose_option, category='error')
         # -- refresh page --
         for card in cards:
             imagesrc = [card, "../static/pokerimg/%s.jpg " % card]
