@@ -43,7 +43,7 @@ class Game():
     #     #print (len(self.players))
     #     #print (self.players[0].display_cards())
 
-    def init_game(self, player_number = 4, pack_number = 1):
+    def init_game(self, player_number = 3, pack_number = 3):
         '''
         Parameters that will not change till the program ends
             will be initialized in this function.
@@ -153,8 +153,9 @@ class Game():
             2.Deal cards to players
         '''
         # step 1
-        self.board.ResetBoard()
+        self.board.ResetBoard(self.pack_num)
         # step 2
+        print(self.pack_num, self.players)
         cardsPerPlayer = int(54 * self.pack_num / len(self.players))
         index = 0
         for hand in self.board.Deal(cardsPerPlayer, len(self.players)):

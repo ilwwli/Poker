@@ -25,7 +25,7 @@ class GameBoard():
         temp = []
         for i in range(NumOfPlayers):
             temp.append(self.Deck[i * CardsForEachPlayer : (i + 1) * CardsForEachPlayer])
-        self.Deck[0 : CardsForEachPlayer * NumOfPlayers] = []
+        self.Deck[0 : CardsForEachPlayer * NumOfPlayers] = []        
         return temp
 
     def Draw(self):
