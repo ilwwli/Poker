@@ -1,6 +1,5 @@
-# Poker
-poker framework
+# Poker "Trick Game" 
 
-Next Target:
-Determine the whole framework (Player and GameManager)
-Write Documents about APIs
+A web game based on Flask
+
+# Wish Every Child can play his game
