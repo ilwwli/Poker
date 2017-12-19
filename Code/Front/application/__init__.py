@@ -1,7 +1,8 @@
 from flask import Flask
 from .src import *
+from os import urandom
 APP = Flask(__name__)
-APP.secret_key = '123456'
+APP.secret_key = urandom(24)
 GAME = game.Game()
 from application import views
 import _thread

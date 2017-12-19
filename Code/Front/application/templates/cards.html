@@ -1,8 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
+    <p>Hello! player <font color="blue"><b>{{player}}</b></font></p>
     Your Hand:
     <hr>
-    {% with cards = get_flashed_messages(category_filter=["cards"]) %}
+    {#% with cards = get_flashed_messages(category_filter=["cards"]) %#}
     {% if cards %}
         {% with options = get_flashed_messages(category_filter=["options"]) %}
         {% if options %}
@@ -44,7 +45,7 @@
     {% else %}
         <p>You Have No Cards HAHAHA!</p>
     {% endif %}
-    {% endwith %}
+    {#% endwith %#}
     <hr>
     <script>
         var all_cards = document.getElementsByName("a_card")

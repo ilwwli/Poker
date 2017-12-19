@@ -11,7 +11,8 @@ from .src.card import Card
 # print(card.Card('A','10'))
 APP.user = {'admin':'admin',
             'player1':'player1', 'player2':'player2',
-            'player3':'player3', 'player4':'player4'}
+            'player3':'player3', 'player4':'player4',
+            '1':'1', '2':'2', '3':'3', '4':'4'}
 
 # --- Login Page ---
 @APP.route('/login', methods=['GET', 'POST'])
@@ -54,10 +55,13 @@ def play():
         flash('Login Expired', category='error')
         return redirect(url_for('login'))
     # Normal Routine
-    if GAME.WAITING:
+    imagesrc = []
+    need_refresh = True
+    player = session['username']
+    if GAME.WAITING:        
         flash("Waiting for other players to join!", category='error')
     else:
-        # -- deal with parameters --
+        # -- Post --
         if request.method == 'POST':
             choose_option = request.form.get('Option')
             if request.form.get('Cards'):
@@ -74,27 +78,26 @@ def play():
             if error:                
                 flash(error, category='error')
                 
-        # -- normal routine
+        # -- Get --
         # with GAME.log_lock:
         for i in GAME.log:
             flash(i, category='log')
         cards, options = GAME.players[session['player']].refresh()
         cards = [str(card).lower() for card in cards] # reform cards
         if options:
-            need_refresh = False
-        else:
-            need_refresh = True                  
+            need_refresh = False       
 
         # -- refresh page --
-        cards.sort()
+        cards.sort()        
         for card in cards:
-            imagesrc = [card, "../static/pokerimg/%s.jpg " % card]
-            flash(imagesrc, category='cards')
+            imagesrc += [[card, "../static/pokerimg/%s.jpg " % card]]
+            #flash(imagesrc, category='cards')
         if not need_refresh:
             for option in options:
                 flash(option, category='options')
         # print(need_refresh)
-    return render_template('cards.html', need_refresh=need_refresh)
+    return render_template('cards.html', need_refresh=need_refresh, 
+                            cards=imagesrc, player=player)
 
 # --- Home Page ---
 @APP.route('/', methods=['GET'])
