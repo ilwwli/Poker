@@ -9,9 +9,24 @@
         <form>
             {% for op in options %}
             {% if loop.first %}
-            <input type="radio" name="option" value="{{op}}" checked>{{op}}
+            <input type="radio", name="option", value="{{op}}" checked>{{op}}
+                {% if op == 'Claim' %}
+                <input type="radio", name = "claim_option", value = 'A' checked>A
+                <input type="radio", name = "claim_option", value = '2'>2
+                <input type="radio", name = "claim_option", value = '3'>3
+                <input type="radio", name = "claim_option", value = '4'>4
+                <input type="radio", name = "claim_option", value = '5'>5
+                <input type="radio", name = "claim_option", value = '6'>6
+                <input type="radio", name = "claim_option", value = '7'>7
+                <input type="radio", name = "claim_option", value = '8'>8
+                <input type="radio", name = "claim_option", value = '9'>9
+                <input type="radio", name = "claim_option", value = '10'>10
+                <input type="radio", name = "claim_option", value = 'J'>J
+                <input type="radio", name = "claim_option", value = 'Q'>Q
+                <input type="radio", name = "claim_option", value = 'K'>K
+                {% endif %}
             {% else %}
-            <input type="radio" name="option" value="{{op}}">{{op}}
+            <input type="radio", name="option", value="{{op}}">{{op}}
             {% endif %}
             {% endfor %}
             <hr>
@@ -34,6 +49,7 @@
     <script>
         var all_cards = document.getElementsByName("a_card")
         var all_options = document.getElementsByName("option")
+        var all_claim_options = document.getElementsByName("claim_option")
         function clickCard(self)
         {
             if(self.chosen)
@@ -66,24 +82,42 @@
                     break
                 }
             }
+            var chosen_claim_option
+            if(chosen_option == 'Claim')
+            {
+                for(op in all_claim_options)
+                {
+                    if(all_claim_options[op].checked)
+                    {
+                        chosen_claim_option = all_claim_options[op].value
+                        break
+                    }
+                }
+            }
             var form = document.createElement("form");
-            form.setAttribute("method", "put");
+            form.setAttribute("method", "post");
             form.setAttribute("action", "");
 
             var hiddenField1 = document.createElement("input");
             hiddenField1.setAttribute("type", "hidden");
             hiddenField1.setAttribute("name", "Option");
             hiddenField1.setAttribute("value",chosen_option);
-
             form.appendChild(hiddenField1);
 
             var hiddenField2 = document.createElement("input");
             hiddenField2.setAttribute("type", "hidden");
             hiddenField2.setAttribute("name", "Cards");
             hiddenField2.setAttribute("value",chosen_cards);
-
             form.appendChild(hiddenField2);
-
+            
+            if(chosen_option == 'Claim')
+            {
+                var hiddenField3 = document.createElement("input");
+                hiddenField3.setAttribute("type", "hidden");
+                hiddenField3.setAttribute("name", "ClaimOption");
+                hiddenField3.setAttribute("value",chosen_claim_option);
+                form.appendChild(hiddenField3);
+            }
             document.body.appendChild(form);
             form.submit();
         }

@@ -44,8 +44,6 @@ def config():
     flash('game started', category='error')
     return redirect(url_for('login'))
 
-# cards = ['h5','da','c5','s8','d5','c4','s8','h4']
-# options = ['claim', 'follow', 'question', 'pass']
 # --- Game Page ---
 @APP.route('/play', methods=['GET', 'POST'])
 def play():
@@ -55,38 +53,40 @@ def play():
     if session['username'] not in GAME.player_names:
         flash('Login Expired', category='error')
         return redirect(url_for('login'))
-    # print(GAME.player)
-    # print(GAME.current_player_numbers)
-    # print(GAME.player_numbers)
     # Normal Routine
     if GAME.WAITING:
         flash("Waiting for other players to join!", category='error')
     else:
+        # -- deal with parameters --
+        if request.method == 'POST':
+            choose_option = request.form.get('Option')
+            if request.form.get('Cards'):
+                choose_cards = request.form.get('Cards')[:-1]
+                choose_cards = choose_cards.split(',')
+                choose_cards_reform = [Card(card[0].upper(), card[1:].upper())\
+                    for card in choose_cards]
+            else:
+                choose_cards_reform = []
+            choose_claim = {'claim_length':len(choose_cards_reform),\
+                    'claim_rank':request.form.get('ClaimOption')}
+            error = GAME.players[session['player']].send_choices(choose_option,\
+                *choose_cards_reform, claim=choose_claim)
+            if error:                
+                flash(error, category='error')
+                
+        # -- normal routine
         # with GAME.log_lock:
         for i in GAME.log:
-            flash(i, category='error')
+            flash(i, category='log')
         cards, options = GAME.players[session['player']].refresh()
         cards = [str(card).lower() for card in cards] # reform cards
-
-        # -- deal with parameters --
-        choose_option = request.args.get('Option')
-        if request.args.get('Cards'):
-            choose_cards = request.args.get('Cards')[:-1]
-            choose_cards = choose_cards.split(',')
-            choose_cards_reform = [Card(card[0].upper(), card[1:].upper())
-                for card in choose_cards]
+        if options:
+            need_refresh = False
         else:
-            choose_cards_reform = []
-        choose_claim = {'claim_length':len(choose_cards_reform), 'claim_rank':'A'} # placeholder
-        need_refresh = GAME.players[session['player']].send_choices(choose_option,
-            *choose_cards_reform, claim = choose_claim)
-        # if choose_option == 'Claim' or choose_option == 'Follow':
-        #     for card in choose_cards:
-        #         if card in cards:
-        #             cards.remove(card)
-        # flash("your last choice is %s" % choose_option, category='error')
+            need_refresh = True                  
 
         # -- refresh page --
+        cards.sort()
         for card in cards:
             imagesrc = [card, "../static/pokerimg/%s.jpg " % card]
             flash(imagesrc, category='cards')
@@ -94,12 +94,10 @@ def play():
             for option in options:
                 flash(option, category='options')
         # print(need_refresh)
-    return render_template('cards.html', need_refresh = need_refresh)
+    return render_template('cards.html', need_refresh=need_refresh)
 
 # --- Home Page ---
 @APP.route('/', methods=['GET'])
 @APP.route('/index', methods=['GET'])
-#@auth.login_required
-def get_tasks():
-   # return jsonify({'tasks': map(make_public_task, tasks)})
+def get_tasks():  
     return render_template('index.html')
