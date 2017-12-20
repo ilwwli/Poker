@@ -17,8 +17,13 @@ class Card():
     def __eq__(self, othercard):
         return Card.rank2num(self.rank) == Card.rank2num(othercard.rank)
 
-    def __gt__(self, othercard):
-        return Card.rank2num(self.rank) > Card.rank2num(othercard.rank)
+    def __lt__(self, othercard):
+        return Card.rank2num(self.rank) < Card.rank2num(othercard.rank) \
+                if Card.rank2num(self.rank) != Card.rank2num(othercard.rank) \
+                else Card.suit2num(self.suit) < Card.suit2num(othercard.suit)
+
+    # def __gt__(self, othercard):
+    #     return Card.rank2num(self.rank) > Card.rank2num(othercard.rank)
 
     def __hash__(self):
         return hash(self.suit + self.rank)
@@ -38,6 +43,11 @@ class Card():
         rank2numdict = {'2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9,
                         '10':10, 'J':11, 'Q':12, 'K':13, 'A':14, 'B':15, 'R':16}
         return rank2numdict[rank]
+
+    @staticmethod
+    def suit2num(suit):
+        suit2numdict = {'D':1, 'C':2, 'H':3, 'S':4, 'W':5}
+        return suit2numdict[suit]
 
 class FullDeck():
     cards = []
@@ -64,3 +74,6 @@ if __name__ == "__main__":
     for i in FullDeck.GetFullDeck():
         print(i, end = ' ')
     print()
+    h5 = Card('H','5')
+    s5 = Card('S','5')
+    print(h5 > s5, h5 < s5)
