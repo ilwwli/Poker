@@ -44,6 +44,7 @@ class Player:
 
     # ---- interface for client ----
     def refresh(self) -> list:
+        self.cards.sort()
         if self.turn_start.is_set():
             if self.new_turn:
                 options = ['Claim']

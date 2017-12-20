@@ -87,8 +87,7 @@ def play():
         if options:
             need_refresh = False       
 
-        # -- refresh page --
-        cards.sort()        
+        # -- refresh page --                    
         for card in cards:
             imagesrc += [[card, "../static/pokerimg/%s.jpg " % card]]
             #flash(imagesrc, category='cards')

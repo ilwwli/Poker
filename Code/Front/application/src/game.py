@@ -43,7 +43,7 @@ class Game():
     #     #print (len(self.players))
     #     #print (self.players[0].display_cards())
 
-    def init_game(self, player_number = 3, pack_number = 3):
+    def init_game(self, player_number = 2, pack_number = 2):
         '''
         Parameters that will not change till the program ends
             will be initialized in this function.
